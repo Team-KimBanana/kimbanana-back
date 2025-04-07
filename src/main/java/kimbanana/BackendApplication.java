@@ -1,4 +1,4 @@
-package kimbanana.backend;
+package kimbanana;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
