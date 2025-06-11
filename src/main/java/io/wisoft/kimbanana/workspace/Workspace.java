@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Presentation {
+public class Workspace {
     private String presentationId;
     private String presentationTitle;
     private LocalDateTime lastRevisionDate;

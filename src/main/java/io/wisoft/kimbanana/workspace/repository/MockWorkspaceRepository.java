@@ -1,24 +1,24 @@
 package io.wisoft.kimbanana.workspace.repository;
 
-import io.wisoft.kimbanana.workspace.Presentation;
+import io.wisoft.kimbanana.workspace.Workspace;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MockPresentationRepository implements PresentationRepository {
-    Map<String, Presentation> store = new HashMap<>();
+public class MockWorkspaceRepository implements WorkspaceRepository {
+    Map<String, Workspace> store = new HashMap<>();
 
-    public MockPresentationRepository() {
-        Presentation p1 = new Presentation();
+    public MockWorkspaceRepository() {
+        Workspace p1 = new Workspace();
         p1.setPresentationId("p_"+ 2929);
         System.out.println(p1.getPresentationId());
         p1.setPresentationTitle("자기소개 - 신보연");
         p1.setUserId("boyeon");
         p1.setLastRevisionDate(LocalDateTime.now());
 
-        Presentation p2 = new Presentation();
+        Workspace p2 = new Workspace();
         p2.setPresentationId("p_"+ 2222);
         System.out.println(p2.getPresentationId());
         p2.setPresentationTitle("캡스톤 발표 자료");
@@ -31,7 +31,7 @@ public class MockPresentationRepository implements PresentationRepository {
     
     @Override
     public String add(final String userId) {
-        Presentation p = new Presentation();
+        Workspace p = new Workspace();
         p.setPresentationId("p_"+ 1111);
         p.setUserId(userId);
         p.setPresentationTitle("Untitled");
@@ -41,7 +41,7 @@ public class MockPresentationRepository implements PresentationRepository {
     }
 
     @Override
-    public List<Presentation> findAll() {
+    public List<Workspace> findAll() {
         return new ArrayList<>(store.values());
     }
 

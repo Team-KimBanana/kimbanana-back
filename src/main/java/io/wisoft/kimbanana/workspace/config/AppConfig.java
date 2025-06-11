@@ -1,18 +1,18 @@
 package io.wisoft.kimbanana.workspace.config;
 
-import io.wisoft.kimbanana.workspace.repository.MockPresentationRepository;
-import io.wisoft.kimbanana.workspace.service.PresentationService;
+import io.wisoft.kimbanana.workspace.repository.MockWorkspaceRepository;
+import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig{
     @Bean
-    public MockPresentationRepository presentationRepository() {
-        return new MockPresentationRepository();
+    public MockWorkspaceRepository presentationRepository() {
+        return new MockWorkspaceRepository();
     }
     @Bean
-    public PresentationService presentationService() {
-        return new PresentationService(presentationRepository());
+    public WorkspaceService presentationService() {
+        return new WorkspaceService(presentationRepository());
     }
 }
