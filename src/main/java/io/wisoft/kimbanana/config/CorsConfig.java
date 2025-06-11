@@ -1,4 +1,4 @@
-package io.wisoft.kimbanana.presentation.config;
+package io.wisoft.kimbanana.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
