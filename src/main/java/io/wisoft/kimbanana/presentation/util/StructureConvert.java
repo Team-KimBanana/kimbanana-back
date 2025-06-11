@@ -1,6 +1,6 @@
 package io.wisoft.kimbanana.presentation.util;
 
-import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse.SlideStructure;
+import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureUpdatedResponse.SlideStructure;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.util.Comparator;
 import java.util.List;

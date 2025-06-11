@@ -7,15 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PresentationStructureResponse {
+public class PresentationStructureUpdatedResponse {
     private String presentationId;
     private String title;
     private List<SlideStructure> slides;
 
-    public PresentationStructureResponse() {
+    public PresentationStructureUpdatedResponse() {
     }
 
-    public PresentationStructureResponse(String presentationId, String title, List<SlideStructure> slides) {
+    public PresentationStructureUpdatedResponse(String presentationId, String title, List<SlideStructure> slides) {
         this.presentationId = presentationId;
         this.title = title;
         this.slides = slides;
