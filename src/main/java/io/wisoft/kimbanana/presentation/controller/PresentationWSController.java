@@ -48,7 +48,7 @@ public class PresentationWSController {
                 .lastRevisionUserId(slide.getLastRevisionUserId())
                 .data(slide.getData())
                 .build();
-
+      
         String topic = "/topic/presentation." + presentationId + ".slide." + currentSlideId;
         messagingTemplate.convertAndSend(topic, response);
     }
