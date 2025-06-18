@@ -1,18 +1,26 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.mock.MockPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
 import io.wisoft.kimbanana.presentation.service.PresentationService;
 import io.wisoft.kimbanana.workspace.repository.MockWorkspaceRepository;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
+import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
+    private final DataSource dataSource;
+
+    public AppConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Bean
     public PresentationRepository presentationRepository() {
-        return new MockPresentationRepository();
+        return new JdbcPresentationRepository(dataSource);
     }
 
     @Bean
