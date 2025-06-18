@@ -1,6 +1,8 @@
 package io.wisoft.kimbanana.presentation.controller;
 
 import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse.SlideStructure;
+import io.wisoft.kimbanana.presentation.dto.response.SlideEditResponse;
+import io.wisoft.kimbanana.presentation.dto.response.SlideWrapper;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse;
@@ -42,8 +44,13 @@ public class PresentationWSController {
         log.info("수정 요청 슬라이드: {}", slide.getSlideId());
         presentationService.updateSlide(presentationId, currentSlideId, slide);
 
+        SlideEditResponse response = SlideEditResponse.builder()
+                .lastRevisionUserId(slide.getLastRevisionUserId())
+                .data(slide.getData())
+                .build();
+
         String topic = "/topic/presentation." + presentationId + ".slide." + currentSlideId;
-        messagingTemplate.convertAndSend(topic, slide);
+        messagingTemplate.convertAndSend(topic, response);
     }
 }
 

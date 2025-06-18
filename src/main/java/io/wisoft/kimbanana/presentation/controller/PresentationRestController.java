@@ -2,6 +2,7 @@ package io.wisoft.kimbanana.presentation.controller;
 
 import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse;
 import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse.SlideStructure;
+import io.wisoft.kimbanana.presentation.dto.response.SlideWrapper;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.dto.response.SlideAddResponse;
 import io.wisoft.kimbanana.presentation.entity.Slide;
@@ -29,13 +30,13 @@ public class PresentationRestController {
 
     //단일 슬라이드 조회
     @GetMapping("/{presentation-id}/slides/{slide-id}")
-    public ResponseEntity<Slide> getSlide(@PathVariable("presentation-id") String presentationId,
+    public ResponseEntity<SlideWrapper> getSlide(@PathVariable("presentation-id") String presentationId,
                                           @PathVariable("slide-id") String slideId) {
 
         Slide slide = presentationService.getSlide(presentationId, slideId);
         System.out.println(slide.getSlideId());
 
-        return ResponseEntity.ok(slide);
+        return ResponseEntity.ok(new SlideWrapper(slide));
     }
 
 
