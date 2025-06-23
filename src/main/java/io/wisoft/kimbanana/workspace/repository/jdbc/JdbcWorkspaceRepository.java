@@ -3,10 +3,16 @@ package io.wisoft.kimbanana.workspace.repository.jdbc;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.workspace.Workspace;
 import io.wisoft.kimbanana.workspace.repository.WorkspaceRepository;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -27,14 +33,34 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
     }
 
     @Override
-    public String add(final String userId) {
-        return "";
+    public Workspace findPresentation(final String presentationId) {
+        return null;
     }
 
+    @Override
+    public String add(final String userId) {
+        String sql = "INSERT INTO presentation (presentation_id, presentation_title, last_revision_time, user_id) VALUES (?, ?, ?, ?)";
+
+        UUID id = UUID.randomUUID();
+        String title = "untitled";
+        LocalDateTime now = LocalDateTime.now();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement psmt = connection.prepareStatement(sql, new String[]{"presentation_id"});
+            psmt.setString(1, "p_" + id);
+            psmt.setString(2, title);
+            psmt.setTimestamp(3, Timestamp.valueOf(now));
+            psmt.setString(4, userId);
+            return psmt;
+        });
+
+        return "p_" + id;
+    }
 
     @Override
     public int delete(final String presentationId) {
-        return 0;
+        String sql = "DELETE FROM presentation WHERE presentation_id = ?";
+        return jdbcTemplate.update(sql, presentationId);
     }
 
 

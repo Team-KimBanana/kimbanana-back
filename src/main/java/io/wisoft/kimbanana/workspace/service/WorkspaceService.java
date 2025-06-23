@@ -15,6 +15,10 @@ public class WorkspaceService {
         return workspaceRepository.findAllPresentation();
     }
 
+    public Workspace findPresentation(final String presentationId) {
+        return workspaceRepository.findPresentation(presentationId);
+    }
+
     public String addPresentation(final String userId) {
         return workspaceRepository.add(userId);
     }
@@ -22,5 +26,4 @@ public class WorkspaceService {
     public int deletePresentation(final String presentationId) {
         return workspaceRepository.delete(presentationId);
     }
-
 }
