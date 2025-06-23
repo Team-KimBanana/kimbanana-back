@@ -24,7 +24,7 @@ public class WorkspaceController {
 
     @GetMapping()
     public ResponseEntity<List<Workspace>> getAllSPresentation(){
-        return ResponseEntity.ok(workspaceService.findPresentation());
+        return ResponseEntity.ok(workspaceService.findAllPresentation());
     }
 
     @PostMapping()

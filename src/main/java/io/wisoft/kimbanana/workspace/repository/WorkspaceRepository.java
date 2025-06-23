@@ -6,7 +6,7 @@ import java.util.List;
 public interface WorkspaceRepository {
     String add(final String userId);
 
-    List<Workspace> findAll();
+    List<Workspace> findAllPresentation();
 
     int delete(final String presentationId);
 }
