@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.workspace.controller;
 
+import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.workspace.Workspace;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,13 +26,16 @@ public class WorkspaceController {
 
     @GetMapping()
     public ResponseEntity<List<Workspace>> getAllSPresentation(){
-        return ResponseEntity.ok(workspaceService.findPresentation());
+        return ResponseEntity.ok(workspaceService.findAllPresentation());
     }
 
+    @GetMapping("/{presentation-id}")
+    public ResponseEntity<Workspace> getSPresentation(@PathVariable String presentationId){
+        return ResponseEntity.ok(workspaceService.findPresentation(presentationId));
+    }
     @PostMapping()
-    public String addPresentation(final String userId) {
-        return workspaceService.addPresentation(userId);
-
+    public String addPresentation(@RequestBody final Presentation request) {
+        return workspaceService.addPresentation(request.getUserId());
     }
 
     @DeleteMapping("/{presentation-id}")
