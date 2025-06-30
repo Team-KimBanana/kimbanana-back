@@ -1,5 +1,7 @@
 package io.wisoft.kimbanana.presentation.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,6 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
+@JsonInclude(Include.NON_NULL)
 public class Presentation {
     @JsonProperty("presentation_id")
     private String presentationId;
@@ -22,5 +25,12 @@ public class Presentation {
     private String userId;
 
     private List<Slide> slides;
+
+    public Presentation(String presentationId, String presentationTitle, LocalDateTime lastRevisionDate, String userId) {
+        this.presentationId = presentationId;
+        this.presentationTitle = presentationTitle;
+        this.lastRevisionDate = lastRevisionDate;
+        this.userId = userId;
+    }
 }
 

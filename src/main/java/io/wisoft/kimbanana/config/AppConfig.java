@@ -1,10 +1,9 @@
 package io.wisoft.kimbanana.config;
 
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
-import io.wisoft.kimbanana.presentation.repository.mock.MockPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
-import io.wisoft.kimbanana.presentation.service.PresentationService;
-import io.wisoft.kimbanana.workspace.repository.MockWorkspaceRepository;
+import io.wisoft.kimbanana.workspace.repository.WorkspaceRepository;
+import io.wisoft.kimbanana.workspace.repository.jdbc.JdbcWorkspaceRepository;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
@@ -29,12 +28,12 @@ public class AppConfig {
     }
 
     @Bean
-    public MockWorkspaceRepository presentationRepository2() {
-        return new MockWorkspaceRepository();
+    public WorkspaceRepository workspaceRepository() {
+        return new JdbcWorkspaceRepository(dataSource);
     }
     @Bean
-    public WorkspaceService presentationService2() {
-        return new WorkspaceService(presentationRepository2());
+    public WorkspaceService workspaceService() {
+        return new WorkspaceService(workspaceRepository());
     }
 
 }
