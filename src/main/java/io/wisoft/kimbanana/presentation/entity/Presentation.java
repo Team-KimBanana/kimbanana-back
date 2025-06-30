@@ -5,12 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
-
-@Setter
 @Getter
+@Builder
 @JsonInclude(Include.NON_NULL)
 public class Presentation {
     @JsonProperty("presentation_id")

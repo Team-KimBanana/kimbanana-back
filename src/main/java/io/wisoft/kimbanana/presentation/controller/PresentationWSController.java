@@ -1,11 +1,10 @@
 package io.wisoft.kimbanana.presentation.controller;
 
-import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse.SlideStructure;
+import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload.SlideStructure;
 import io.wisoft.kimbanana.presentation.dto.response.SlideEditResponse;
-import io.wisoft.kimbanana.presentation.dto.response.SlideWrapper;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
-import io.wisoft.kimbanana.presentation.dto.response.PresentationStructureResponse;
+import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload;
 import io.wisoft.kimbanana.presentation.service.PresentationService;
 import io.wisoft.kimbanana.presentation.util.StructureConvert;
 import java.util.List;
@@ -20,28 +19,19 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Slf4j
 public class PresentationWSController {
-    PresentationService presentationService;
+    private final PresentationService presentationService;
     private final SimpMessagingTemplate messagingTemplate;
-
-
-    @MessageMapping("/slide.edit.presentation.{presentationId}")
-    public void editSlide(@DestinationVariable String presentationId, Presentation presentation) {
-
-        List<SlideStructure> slideStructures = StructureConvert.structureList(presentation.getSlides());
-        PresentationStructureResponse response = new PresentationStructureResponse(presentationId,
-                presentation.getPresentationTitle(), slideStructures);
-        presentationService.updateStruct(presentationId, slideStructures);
-
-        String topic = "/topic/presentation." + presentationId;
-        messagingTemplate.convertAndSend(topic, response);
-    }
 
     @MessageMapping("/slide.edit.presentation.{presentationId}.slide.{currentSlideId}")
     public void editSlide(@DestinationVariable String presentationId,
                           @DestinationVariable String currentSlideId,
                           Slide slide) {
 
+
+        System.out.println("slide edit: " + slide.getSlideId());
+        System.out.println("current slide: " + slide.getData());
         log.info("수정 요청 슬라이드: {}", slide.getSlideId());
+
         presentationService.updateSlide(presentationId, currentSlideId, slide);
 
         SlideEditResponse response = SlideEditResponse.builder()
@@ -50,6 +40,26 @@ public class PresentationWSController {
                 .build();
       
         String topic = "/topic/presentation." + presentationId + ".slide." + currentSlideId;
+        messagingTemplate.convertAndSend(topic, slide);
+    }
+
+
+    @MessageMapping("/slide.edit.presentation.{presentationId}")
+    public void editSlide(@DestinationVariable String presentationId, Presentation presentation) {
+
+        System.out.println(presentation.getPresentationId());
+        System.out.println(presentation.getPresentationId());
+        System.out.println(presentation.getSlides().size());
+
+        List<SlideStructure> slideStructures = StructureConvert.structureList(presentation.getSlides());
+        StructurePayload response = StructurePayload.builder()
+                .presentationId(presentationId)
+                .slides(slideStructures)
+                .build();
+
+        presentationService.updateStruct(presentationId, response);
+
+        String topic = "/topic/presentation." + presentationId;
         messagingTemplate.convertAndSend(topic, response);
     }
 }
