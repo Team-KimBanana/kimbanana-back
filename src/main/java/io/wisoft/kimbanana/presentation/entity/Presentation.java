@@ -26,7 +26,16 @@ public class Presentation {
 
     private List<Slide> slides;
 
+    public Presentation() {}
+
     public Presentation(String presentationId, String presentationTitle, LocalDateTime lastRevisionDate, String userId) {
+        this.presentationId = presentationId;
+        this.presentationTitle = presentationTitle;
+        this.lastRevisionDate = lastRevisionDate;
+        this.userId = userId;
+    }
+
+    public Presentation(String presentationId, String presentationTitle, LocalDateTime lastRevisionDate, String userId, List<Slide> slides) {
         this.presentationId = presentationId;
         this.presentationTitle = presentationTitle;
         this.lastRevisionDate = lastRevisionDate;
