@@ -2,6 +2,7 @@ package io.wisoft.kimbanana.config;
 
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
+import io.wisoft.kimbanana.presentation.service.PresentationService;
 import io.wisoft.kimbanana.workspace.repository.WorkspaceRepository;
 import io.wisoft.kimbanana.workspace.repository.jdbc.JdbcWorkspaceRepository;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
