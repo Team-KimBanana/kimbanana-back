@@ -2,17 +2,13 @@ package io.wisoft.kimbanana.presentation.controller;
 
 import io.wisoft.kimbanana.presentation.dto.response.WebSocketMessage;
 import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload;
-import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload.SlideStructure;
 import io.wisoft.kimbanana.presentation.dto.response.SlideWrapper;
 import io.wisoft.kimbanana.presentation.dto.response.payload.TitlePayload;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.dto.response.payload.SlideAddPayload;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import io.wisoft.kimbanana.presentation.service.PresentationService;
-import io.wisoft.kimbanana.presentation.util.StructureConvert;
 import io.wisoft.kimbanana.presentation.util.WebSocketMessageType;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
