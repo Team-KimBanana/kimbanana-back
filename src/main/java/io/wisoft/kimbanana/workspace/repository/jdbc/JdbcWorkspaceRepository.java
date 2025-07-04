@@ -26,7 +26,7 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
 
     @Override
     public List<Workspace> findAllPresentation() {
-        String sql = "SELECT p.presentation_id, p.presentation_title, p.last_revision_time, p.user_id, t.thumbnail_url FROM presentation p LEFT JOIN presentation_thumbnail t ON p.presentation_id = t.presentation_id";
+        String sql = "SELECT p.presentation_id, p.presentation_title, p.last_revision_date, p.user_id, t.thumbnail_url FROM presentation p LEFT JOIN presentation_thumbnail t ON p.presentation_id = t.presentation_id";
         List<Workspace> presentationList = jdbcTemplate.query(sql,rowMapper());
         log.debug("presentationList: {}", presentationList);
         return jdbcTemplate.query(sql, rowMapper());
@@ -39,7 +39,7 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
 
     @Override
     public String add(final String userId) {
-        String sql = "INSERT INTO presentation (presentation_id, presentation_title, last_revision_time, user_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO presentation (presentation_id, presentation_title, last_revision_date, user_id) VALUES (?, ?, ?, ?)";
 
         UUID id = UUID.randomUUID();
         String title = "untitled";
@@ -70,7 +70,7 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
             Presentation presentation = new Presentation(
                       rs.getString("presentation_id")
                     , rs.getString("presentation_title")
-                    , rs.getTimestamp("last_revision_time").toLocalDateTime()
+                    , rs.getTimestamp("last_revision_date").toLocalDateTime()
                     , rs.getString("user_id")
             );
 
