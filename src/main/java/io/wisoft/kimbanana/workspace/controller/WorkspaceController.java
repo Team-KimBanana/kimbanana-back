@@ -29,7 +29,7 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceService.findAllPresentation());
     }
 
-    @GetMapping("/{presentation-id}")
+    @GetMapping("/{presentationId}")
     public ResponseEntity<Workspace> getSPresentation(@PathVariable String presentationId){
         return ResponseEntity.ok(workspaceService.findPresentation(presentationId));
     }
@@ -38,8 +38,8 @@ public class WorkspaceController {
         return workspaceService.addPresentation(request.getUserId());
     }
 
-    @DeleteMapping("/{presentation-id}")
-    public ResponseEntity<Void> removePresentation(@PathVariable("presentation-id") final String presentationId) {
+    @DeleteMapping("/{presentationId}")
+    public ResponseEntity<Void> removePresentation(@PathVariable final String presentationId) {
         workspaceService.deletePresentation(presentationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
