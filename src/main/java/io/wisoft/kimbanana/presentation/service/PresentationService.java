@@ -22,6 +22,9 @@ public class PresentationService {
         Presentation presentation = presentationRepository.findByPresentationId(presentationId);
         List<Slide> slides = presentationRepository.findByPresentationSlides(presentationId);
 
+        System.out.println("slides: " + slides.size() + "");
+
+
         presentation = Presentation.builder()
                 .presentationId(presentation.getPresentationId())
                 .presentationTitle(presentation.getPresentationTitle())

@@ -25,7 +25,5 @@ public class Presentation {
     private String userId;
 
     private List<Slide> slides;
-
-    public Presentation() {}
 }
 
