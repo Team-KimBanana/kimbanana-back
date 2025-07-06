@@ -40,7 +40,7 @@ public class PresentationWSController {
                 .build();
       
         String topic = "/topic/presentation." + presentationId + ".slide." + currentSlideId;
-        messagingTemplate.convertAndSend(topic, slide);
+        messagingTemplate.convertAndSend(topic, response);
     }
 
 
