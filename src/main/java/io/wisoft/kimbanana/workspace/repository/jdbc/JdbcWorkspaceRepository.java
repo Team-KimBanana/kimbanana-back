@@ -67,12 +67,12 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
     private RowMapper<Workspace> rowMapper() {
         return (rs, rowNum) -> {
 
-            Presentation presentation = new Presentation(
-                      rs.getString("presentation_id")
-                    , rs.getString("presentation_title")
-                    , rs.getTimestamp("last_revision_date").toLocalDateTime()
-                    , rs.getString("user_id")
-            );
+            Presentation presentation = Presentation.builder()
+                    .presentationId(rs.getString("presentation_id"))
+                    .presentationTitle(rs.getString("presentation_title"))
+                    .lastRevisionDate(rs.getTimestamp("last_revision_date").toLocalDateTime())
+                    .userId(rs.getString("user_id"))
+                    .build();
 
             String thumbnailUrl = rs.getString("thumbnail_url");
 
