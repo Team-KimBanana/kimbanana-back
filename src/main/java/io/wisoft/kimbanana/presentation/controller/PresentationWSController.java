@@ -23,7 +23,7 @@ public class PresentationWSController {
     private final PresentationService presentationService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/slide.edit.presentation.{presentationId}.slide.{currentSlideId}")
+    @MessageMapping("/slide.presentation.{presentationId}.slide.{currentSlideId}")
     public void editSlide(@DestinationVariable String presentationId,
                           @DestinationVariable String currentSlideId,
                           @Payload Slide slide) {
