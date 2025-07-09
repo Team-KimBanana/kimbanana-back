@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -25,7 +26,7 @@ public class PresentationWSController {
     @MessageMapping("/slide.edit.presentation.{presentationId}.slide.{currentSlideId}")
     public void editSlide(@DestinationVariable String presentationId,
                           @DestinationVariable String currentSlideId,
-                          Slide slide) {
+                          @Payload Slide slide) {
 
 
         System.out.println("slide edit: " + slide.getSlideId());
