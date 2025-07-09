@@ -23,7 +23,7 @@ public class PresentationWSController {
     private final PresentationService presentationService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/slide.presentation.{presentationId}.slide.{currentSlideId}")
+    @MessageMapping("/slide.edit.presentation.{presentationId}.slide.{currentSlideId}")
     public void editSlide(@DestinationVariable String presentationId,
                           @DestinationVariable String currentSlideId,
                           @Payload Slide slide) {
@@ -45,7 +45,7 @@ public class PresentationWSController {
     }
 
 
-    @MessageMapping("/slide.edit.presentation.{presentationId}")
+    @MessageMapping("/slide.edit.presentation.{presentationId:[^.]+}")
     public void editSlide(@DestinationVariable String presentationId, Presentation presentation) {
 
         System.out.println(presentation.getPresentationId());
