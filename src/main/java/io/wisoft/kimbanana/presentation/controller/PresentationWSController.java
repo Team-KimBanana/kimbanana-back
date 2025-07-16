@@ -20,27 +20,17 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class PresentationWSController {
     private final PresentationService presentationService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/slide.edit.presentation.{presentationId}.slide.{currentSlideId}")
     public void editSlide(@DestinationVariable String presentationId,
                           @DestinationVariable String currentSlideId,
                           Slide slide) {
 
-
         System.out.println("slide edit: " + slide.getSlideId());
         System.out.println("current slide: " + slide.getData());
         log.info("수정 요청 슬라이드: {}", slide.getSlideId());
 
         presentationService.updateSlide(presentationId, currentSlideId, slide);
-
-        SlideEditResponse response = SlideEditResponse.builder()
-                .lastRevisionUserId(slide.getLastRevisionUserId())
-                .data(slide.getData())
-                .build();
-      
-        String topic = "/topic/presentation." + presentationId + ".slide." + currentSlideId;
-        messagingTemplate.convertAndSend(topic, response);
     }
 
 
@@ -58,10 +48,8 @@ public class PresentationWSController {
                 .build();
 
         presentationService.updateStruct(presentationId, response);
-
-        String topic = "/topic/presentation." + presentationId;
-        messagingTemplate.convertAndSend(topic, response);
     }
 }
+
 
 
