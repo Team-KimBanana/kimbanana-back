@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PresentationRestController {
 
     private final PresentationService presentationService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     //전체 슬라이드 조회 (프레젠테이션 조회)
     @GetMapping("/{presentation-id}/slides")
@@ -55,61 +54,25 @@ public class PresentationRestController {
     @PostMapping("/{presentation-id}/slides")
     public ResponseEntity<SlideAddPayload> createSlide(@PathVariable("presentation-id") String presentationId) {
         SlideAddPayload slide = presentationService.addSlide(presentationId);
-
-        SlideAddPayload payload = SlideAddPayload.builder()
-                .slideId(slide.getSlideId())
-                .order(slide.getOrder())
-                .build();
-
-        WebSocketMessage<SlideAddPayload> message = WebSocketMessage.<SlideAddPayload>builder()
-                .type(WebSocketMessageType.SLIDE_ADD)
-                .payload(payload)
-                .build();
-
-        messagingTemplate.convertAndSend(
-                "/topic/presentation." + presentationId, message
-        );
-
         return ResponseEntity.ok(slide);
     }
 
     //슬라이드 삭제/ 슬라이드 구조 수정
     @PatchMapping("/{presentation-id}/slides")
-    public ResponseEntity<Integer> createSlide(@PathVariable("presentation-id") String presentationId,
-                                          @RequestBody StructurePayload structurePayload) {
+    public ResponseEntity<Integer> updateStructure(@PathVariable("presentation-id") String presentationId,
+                                                   @RequestBody StructurePayload structurePayload) {
 
         int result = presentationService.updateStruct(presentationId, structurePayload);
-
-        WebSocketMessage<StructurePayload> message = WebSocketMessage.<StructurePayload>builder()
-                .type(WebSocketMessageType.STRUCTURE_UPDATED)
-                .payload(structurePayload)
-                .build();
-
-        messagingTemplate.convertAndSend(
-                "/topic/presentation." + presentationId, message
-        );
-
         return ResponseEntity.ok(result);
     }
 
 
     // 프레젠테이션 제목 수정
     @PatchMapping("/{presentation-id}/slides/title")
-    public ResponseEntity<?> UpdateTitle(@PathVariable("presentation-id") String presentationId,
+    public ResponseEntity<?> updateTitle(@PathVariable("presentation-id") String presentationId,
                                          @RequestBody TitlePayload payload) {
 
         presentationService.updateTitle(presentationId, payload.getNewTitle());
-
-        WebSocketMessage<TitlePayload> message  = WebSocketMessage.<TitlePayload>builder()
-                .type(WebSocketMessageType.TITLE_UPDATED)
-                .payload(payload)
-                .build();
-
-        // 실시간 알림: 슬라이드 제목 업데이트됨
-        messagingTemplate.convertAndSend(
-                "/topic/presentation." + presentationId, message
-        );
-
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.presentation.event.PresentationEvents;
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
 import io.wisoft.kimbanana.presentation.service.PresentationService;
@@ -7,6 +8,7 @@ import io.wisoft.kimbanana.workspace.repository.WorkspaceRepository;
 import io.wisoft.kimbanana.workspace.repository.jdbc.JdbcWorkspaceRepository;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import javax.sql.DataSource;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,8 +26,8 @@ public class AppConfig {
     }
 
     @Bean
-    public PresentationService presentationService() {
-        return new PresentationService(presentationRepository());
+    public PresentationService presentationService(ApplicationEventPublisher publisher) {
+        return new PresentationService(presentationRepository(), publisher);
     }
 
     @Bean
