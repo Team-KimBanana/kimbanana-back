@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("api/images") // 공통적인 이미지 관리를 위해 URL 변경
+@RequestMapping("api/images")
 @RequiredArgsConstructor
 public class ImageUploadController {
 

@@ -12,13 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ImageService {
     private static final String UPLOAD_DIR = "uploads/slide-images";
-    private static final String URL_PATH_PREFIX  = "/slide-images/";
+    private static final String URL_PATH_PREFIX = "/slide-images/";
 
     public String uploadImage(MultipartFile image) {
         try {
             Files.createDirectories(Paths.get(UPLOAD_DIR));
 
-            String fileName =  UUID.randomUUID().toString().substring(0, 10) + "_" + image.getOriginalFilename();
+            String fileName = UUID.randomUUID().toString().substring(0, 10) + "_" + image.getOriginalFilename();
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
             image.transferTo(filePath);
 
