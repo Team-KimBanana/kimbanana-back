@@ -21,7 +21,7 @@ public class ImageService {
             String originalName = image.getOriginalFilename();
             String extension = originalName.substring(originalName.lastIndexOf("."));
 
-            String fileName = UUID.randomUUID().toString().substring(0, 10) + "_" + extension;
+            String fileName = UUID.randomUUID() + "_" + extension;
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
             image.transferTo(filePath);
 
