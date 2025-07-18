@@ -34,7 +34,7 @@ public class ImageService {
         try {
             Files.createDirectories(Paths.get(UPLOAD_DIR));
             String fileName = UUID.randomUUID() + ".png";
-          
+
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
 
             BufferedImage src = ImageIO.read(image.getInputStream());
@@ -132,5 +132,4 @@ public class ImageService {
         return out;
     }
 }
-
 
