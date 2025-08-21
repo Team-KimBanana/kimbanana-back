@@ -25,17 +25,19 @@ public class WorkspaceController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Workspace>> getAllSPresentation(){
+    public ResponseEntity<List<Workspace>> getAllSPresentation() {
         return ResponseEntity.ok(workspaceService.findAllPresentation());
     }
 
     @GetMapping("/{presentationId}")
-    public ResponseEntity<Workspace> getSPresentation(@PathVariable String presentationId){
+    public ResponseEntity<Workspace> getSPresentation(@PathVariable String presentationId) {
         return ResponseEntity.ok(workspaceService.findPresentation(presentationId));
     }
+
     @PostMapping()
-    public String addPresentation(@RequestBody final Presentation request) {
-        return workspaceService.addPresentation(request.getUserId());
+    public ResponseEntity<String> addPresentation(@RequestBody final Presentation request) {
+        String presentationId = workspaceService.addPresentation(request.getUserId());
+        return ResponseEntity.ok(presentationId);
     }
 
     @DeleteMapping("/{presentationId}")
