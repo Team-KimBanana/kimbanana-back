@@ -53,5 +53,4 @@ public class HistoryController {
         historyService.restoreHistory(presentationId, payload);
         return ResponseEntity.ok(HttpStatus.valueOf(303));
     }
-
 }
