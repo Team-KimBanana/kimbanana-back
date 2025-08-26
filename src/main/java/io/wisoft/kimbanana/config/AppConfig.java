@@ -53,6 +53,7 @@ public class AppConfig {
     @Bean
     public HistoryService historyService() {
         return new HistoryService(historyRepository());
+    }
 
     @Bean
     public ImageUploadRepository imageUploadRepository() {
