@@ -22,4 +22,13 @@ public class ImageUploadController {
         String imageUrl = imageService.uploadImage(image);
         return ResponseEntity.ok(imageUrl);
     }
+
+
+    @PostMapping("/thumbnails/presentation")
+    public ResponseEntity<String> uploadThumbnails(@RequestParam("file") MultipartFile image,
+                                                   @RequestParam("presentationId") String presentationId) {
+
+        String response = imageService.uploadPresentationThumbnail(image, presentationId);
+        return ResponseEntity.ok(response);
+    }
 }

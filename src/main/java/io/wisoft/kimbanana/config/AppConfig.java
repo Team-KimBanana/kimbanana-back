@@ -1,5 +1,7 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.image.repository.ImageUploadRepository;
+import io.wisoft.kimbanana.image.service.ImageService;
 import io.wisoft.kimbanana.presentation.event.PresentationEvents;
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
@@ -34,10 +36,22 @@ public class AppConfig {
     public WorkspaceRepository workspaceRepository() {
         return new JdbcWorkspaceRepository(dataSource);
     }
+
     @Bean
     public WorkspaceService workspaceService() {
         return new WorkspaceService(workspaceRepository());
     }
 
+
+    @Bean
+    public ImageUploadRepository imageUploadRepository() {
+        return new ImageUploadRepository(dataSource);
+    }
+
+    @Bean
+    public ImageService imageService() {
+        return new ImageService(imageUploadRepository());
+    }
 }
+
 
