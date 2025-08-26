@@ -154,6 +154,6 @@ public class JdbcHistoryRepository implements HistoryRepository {
                     .build();
 
             return history;
-            };
-        }
+        };
     }
+}
