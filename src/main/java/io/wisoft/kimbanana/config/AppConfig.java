@@ -1,5 +1,8 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.history.repository.HistoryRepository;
+import io.wisoft.kimbanana.history.repository.jdbc.JdbcHistoryRepository;
+import io.wisoft.kimbanana.history.service.HistoryService;
 import io.wisoft.kimbanana.image.repository.ImageUploadRepository;
 import io.wisoft.kimbanana.image.service.ImageService;
 import io.wisoft.kimbanana.presentation.event.PresentationEvents;
@@ -42,6 +45,14 @@ public class AppConfig {
         return new WorkspaceService(workspaceRepository());
     }
 
+    @Bean
+    public HistoryRepository historyRepository() {
+        return new JdbcHistoryRepository(dataSource);
+    }
+
+    @Bean
+    public HistoryService historyService() {
+        return new HistoryService(historyRepository());
 
     @Bean
     public ImageUploadRepository imageUploadRepository() {

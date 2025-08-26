@@ -16,5 +16,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/presentation-thumbnails/**")
                 .addResourceLocations(thumbnailPath);
     }
-
 }
