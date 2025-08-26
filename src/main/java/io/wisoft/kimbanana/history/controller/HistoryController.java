@@ -3,6 +3,7 @@ package io.wisoft.kimbanana.history.controller;
 import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.RestorePayload;
+import io.wisoft.kimbanana.history.SavePayload;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.history.service.HistoryService;
 import io.wisoft.kimbanana.presentation.dto.response.payload.SlideAddPayload;
@@ -42,8 +43,8 @@ public class HistoryController {
 
     //히스토리 저장
     @PostMapping("/histories")
-    public ResponseEntity<String> createHistory(@PathVariable("presentation-id") String presentationId, @RequestBody List<Slide> request) {
-        String historyId = historyService.addHistory(presentationId, request);
+    public ResponseEntity<String> createHistory(@PathVariable("presentation-id") String presentationId, @RequestBody SavePayload request) {
+        String historyId = historyService.addHistory(presentationId, request.getSlides(), request.getCurrentUserId());
         return ResponseEntity.ok(historyId);
     }
 

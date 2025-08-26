@@ -4,14 +4,10 @@ import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.Mapping;
 import io.wisoft.kimbanana.history.RestorePayload;
+import io.wisoft.kimbanana.history.SavePayload;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
-import io.wisoft.kimbanana.history.repository.jdbc.JdbcHistoryRepository;
-import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
-import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
-import io.wisoft.kimbanana.workspace.repository.WorkspaceRepository;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -36,10 +32,10 @@ public class HistoryService {
         return historyRepository.findByHistoryId(historyId);
     }
 
-    public String addHistory(final String presentationId, final List<Slide> request) {
+    public String addHistory(final String presentationId, final List<Slide> slides, final String currentUserId) {
         // service에서 batchId(UUID) 생성
         String batchId = "h_" + UUID.randomUUID();
-        historyRepository.addHistory(batchId, presentationId, request);
+        historyRepository.addHistory(batchId, presentationId, slides, currentUserId);
         return batchId;
     }
 

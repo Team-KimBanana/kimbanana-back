@@ -46,8 +46,8 @@ public class JdbcHistoryRepository implements HistoryRepository {
     }
 
     @Override
-    public void addHistory(final String batchId, final String presentationId, final List<Slide> request) {
-        String sql = "INSERT INTO history (history_id, last_revision_date, slide_id, slide_order, data, presentation_id) VALUES (?, ?, ?, ?, ?, ?)";
+    public void addHistory(final String batchId, final String presentationId, final List<Slide> request, final String currentUserId) {
+        String sql = "INSERT INTO history (history_id, last_revision_date, last_revision_user_id, slide_id, slide_order, data, presentation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
 
         for (Slide slide : request) {
@@ -56,9 +56,10 @@ public class JdbcHistoryRepository implements HistoryRepository {
                 psmt.setString(1, batchId);
                 psmt.setTimestamp(2, Timestamp.valueOf(now));
                 psmt.setString(3, slide.getSlideId());
-                psmt.setInt(4, slide.getSlideOrder());
-                psmt.setString(5, slide.getData().toString());
-                psmt.setString(6, presentationId);
+                psmt.setString(4, currentUserId);
+                psmt.setInt(5, slide.getSlideOrder());
+                psmt.setString(6, slide.getData().toString());
+                psmt.setString(7, presentationId);
                 return psmt;
             });
         }

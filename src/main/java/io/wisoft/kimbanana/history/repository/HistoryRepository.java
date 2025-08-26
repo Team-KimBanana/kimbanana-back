@@ -3,6 +3,7 @@ package io.wisoft.kimbanana.history.repository;
 import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.Mapping;
 import io.wisoft.kimbanana.history.RestorePayload;
+import io.wisoft.kimbanana.history.SavePayload;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.util.List;
@@ -15,7 +16,7 @@ public interface HistoryRepository {
 
     History findByHistoryId(final String historyId);
 
-    void addHistory(final String batchId, final String presentationId, final List<Slide> request);
+    void addHistory(final String batchId, final String presentationId, final List<Slide> request, final String currentUserId);
 
     void overwrite(final String presentationId, final String contents, final String currentUserId);
 
