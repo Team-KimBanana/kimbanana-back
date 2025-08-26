@@ -23,33 +23,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/presentations/{presentation-id}")
+@RequestMapping("/api/presentations")
 public class HistoryController {
 
     private final HistoryService historyService;
 
     //전체 히스토리 목록 조회
-    @GetMapping("/histories")
+    @GetMapping("{presentation-id}/histories")
     public List<HistoryListResponse> getHistoryList(@PathVariable("presentation-id") String presentationId) {
         return historyService.findByPresentationId(presentationId);
     }
 
     //단일 히스토리 조회
-    @GetMapping("/histories/{history-id}")
+    @GetMapping("{presentation-id}/histories/{history-id}")
     public ResponseEntity<History> getHistories(@PathVariable("history-id") String historyId) {
         History history = historyService.findByHistoryId(historyId);
         return ResponseEntity.ok(history);
     }
 
     //히스토리 저장
-    @PostMapping("/histories")
+    @PostMapping("{presentation-id}/histories")
     public ResponseEntity<String> createHistory(@PathVariable("presentation-id") String presentationId, @RequestBody SavePayload request) {
         String historyId = historyService.addHistory(presentationId, request.getSlides(), request.getCurrentUserId());
         return ResponseEntity.ok(historyId);
     }
 
     //히스토리 복원
-    @PostMapping("/restorations")
+    @PostMapping("{presentation-id}/restorations")
     public ResponseEntity<HttpStatus> restoreHistory(@PathVariable("presentation-id") String presentationId, @RequestBody RestorePayload payload) {
         historyService.restoreHistory(presentationId, payload);
         return ResponseEntity.ok(HttpStatus.valueOf(303));

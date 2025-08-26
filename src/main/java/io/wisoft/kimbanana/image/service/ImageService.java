@@ -33,8 +33,8 @@ public class ImageService {
     public String uploadImage(MultipartFile image) {
         try {
             Files.createDirectories(Paths.get(UPLOAD_DIR));
-
             String fileName = UUID.randomUUID() + ".png";
+          
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
 
             BufferedImage src = ImageIO.read(image.getInputStream());
