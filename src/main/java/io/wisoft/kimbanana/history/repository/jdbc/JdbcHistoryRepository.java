@@ -114,7 +114,7 @@ public class JdbcHistoryRepository implements HistoryRepository {
     }
 
     @Override
-    public List<Slide>  findHistorySlides(String historyId, List<String> slideIds) {
+    public List<Slide> findHistorySlides(String historyId, List<String> slideIds) {
         if (slideIds.isEmpty()) {
             return List.of(); // 조회할 슬라이드가 없으면 빈 리스트 반환
         }

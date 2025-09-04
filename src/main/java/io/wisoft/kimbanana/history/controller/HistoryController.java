@@ -36,11 +36,8 @@ public class HistoryController {
 
     //단일 히스토리 조회
     @GetMapping("/{presentation-id}/histories/{history-id}")
-    public ResponseEntity<List<History>> getHistories(@PathVariable("history-id") String historyId) {
-        System.out.println(historyId);
-        List<History> historyList = historyService.findByHistoryId(historyId);
-        System.out.println(historyList);
-        return ResponseEntity.ok(historyList);
+    public List<History> getHistories(@PathVariable("history-id") String historyId) {
+        return historyService.findByHistoryId(historyId);
     }
 
     //히스토리 저장
