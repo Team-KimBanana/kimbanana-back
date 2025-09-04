@@ -35,14 +35,14 @@ public class JdbcHistoryRepository implements HistoryRepository {
     public List<History> findByPresentationId(final String presentationId) {
         String sql = "SELECT * FROM history WHERE presentation_id = ?";
         List<History> history = jdbcTemplate.query(sql, rowMapper(), presentationId);
-
         return history;
     }
 
     @Override
     public List<History> findByHistoryId(final String historyId) {
         String sql = "SELECT * FROM history WHERE history_id = ?";
-        return jdbcTemplate.query(sql, rowMapper(), historyId);
+        List<History> history = jdbcTemplate.query(sql, rowMapper(), historyId);
+        return history;
     }
 
     @Override
