@@ -147,13 +147,13 @@ public class JdbcHistoryRepository implements HistoryRepository {
             History history = History.builder()
                     .historyId(rs.getString("history_id"))
                     .lastRevisionDate(rs.getTimestamp("last_revision_date").toLocalDateTime())
-                    .contents(rs.getString("data"))
+                    .data(rs.getString("data"))
                     .order(rs.getInt("slide_order"))
                     .presentationId(rs.getString("presentation_id"))
                     .slideId(rs.getString("slide_id"))
                     .build();
 
             return history;
-            };
-        }
+        };
     }
+}

@@ -1,6 +1,7 @@
 package io.wisoft.kimbanana.history.controller;
 
 import io.wisoft.kimbanana.history.History;
+import io.wisoft.kimbanana.history.HistoryDetailResponse;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.RestorePayload;
 import io.wisoft.kimbanana.history.SavePayload;
@@ -36,7 +37,7 @@ public class HistoryController {
 
     //단일 히스토리 조회
     @GetMapping("/{presentation-id}/histories/{history-id}")
-    public List<History> getHistories(@PathVariable("history-id") String historyId) {
+    public HistoryDetailResponse getHistories(@PathVariable("history-id") String historyId) {
         return historyService.findByHistoryId(historyId);
     }
 
@@ -53,5 +54,4 @@ public class HistoryController {
         historyService.restoreHistory(presentationId, payload);
         return ResponseEntity.ok(HttpStatus.valueOf(303));
     }
-
 }

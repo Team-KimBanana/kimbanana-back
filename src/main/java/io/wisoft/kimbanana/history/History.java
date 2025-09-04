@@ -16,15 +16,13 @@ public class History {
     @JsonProperty("last_revision_date")
     private LocalDateTime lastRevisionDate;
 
-    private int order;
-
-    private String contents;
-
     @JsonProperty("slide_id")
     private String slideId;
+
+    private int order;
 
     @JsonProperty("presentation_id")
     private String presentationId;
 
-
+    private String data;
 }
