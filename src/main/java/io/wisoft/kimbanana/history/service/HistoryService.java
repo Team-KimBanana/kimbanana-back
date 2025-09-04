@@ -1,6 +1,7 @@
 package io.wisoft.kimbanana.history.service;
 
 import io.wisoft.kimbanana.history.History;
+import io.wisoft.kimbanana.history.HistoryDetailResponse;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.Mapping;
 import io.wisoft.kimbanana.history.RestorePayload;
@@ -28,8 +29,23 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<History> findByHistoryId(final String historyId) {
-        return historyRepository.findByHistoryId(historyId);
+    public HistoryDetailResponse findByHistoryId(final String historyId) {
+        List<History> historyDetailList = historyRepository.findByHistoryId(historyId);
+
+        List<HistoryDetailResponse.SlideResponse> slides = historyDetailList.stream()
+                .map(history -> HistoryDetailResponse.SlideResponse.builder()
+                        .slideId(history.getSlideId())
+                        .lastRevisionDate(history.getLastRevisionDate())
+                        .lastRevisionUserId(history.getPresentationId())
+                        .order(history.getOrder())
+                        .data(history.getData())
+                        .build()
+                )
+                .toList();
+
+        return HistoryDetailResponse.builder()
+                .slides(slides)
+                .build();
     }
 
     public String addHistory(final String presentationId, final List<Slide> slides, final String currentUserId) {
@@ -54,10 +70,12 @@ public class HistoryService {
                         .map(Mapping::getHistorySlide)
                         .collect(Collectors.toList());
 
-                List<Slide> slidesToRestore = historyRepository.findHistorySlides(request.getHistoryId(), historySlideIds);
+                List<Slide> slidesToRestore = historyRepository.findHistorySlides(request.getHistoryId(),
+                        historySlideIds);
 
                 // 2. Repository에서 batch update
-                historyRepository.restorePartialSlides(presentationId, request.getMappings(), slidesToRestore, request.getCurrentUserId());
+                historyRepository.restorePartialSlides(presentationId, request.getMappings(), slidesToRestore,
+                        request.getCurrentUserId());
                 break;
             default:
                 return HttpStatus.BAD_REQUEST;
