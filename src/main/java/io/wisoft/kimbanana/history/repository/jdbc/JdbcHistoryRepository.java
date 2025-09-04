@@ -40,9 +40,9 @@ public class JdbcHistoryRepository implements HistoryRepository {
     }
 
     @Override
-    public History findByHistoryId(final String historyId) {
+    public List<History> findByHistoryId(final String historyId) {
         String sql = "SELECT * FROM history WHERE history_id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper(), historyId);
+        return jdbcTemplate.query(sql, rowMapper(), historyId);
     }
 
     @Override

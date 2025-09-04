@@ -36,8 +36,8 @@ public class HistoryController {
 
     //단일 히스토리 조회
     @GetMapping("/{presentation-id}/histories/{history-id}")
-    public ResponseEntity<History> getHistories(@PathVariable("history-id") String historyId) {
-        History history = historyService.findByHistoryId(historyId);
+    public ResponseEntity<List<History>> getHistories(@PathVariable("history-id") String historyId) {
+        List<History> history = historyService.findByHistoryId(historyId);
         return ResponseEntity.ok(history);
     }
 
