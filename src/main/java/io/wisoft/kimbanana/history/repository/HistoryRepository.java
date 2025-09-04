@@ -14,7 +14,7 @@ public interface HistoryRepository {
 
     List<History> findByPresentationId(final String presentationId);
 
-    History findByHistoryId(final String historyId);
+    List<History> findByHistoryId(final String historyId);
 
     void addHistory(final String batchId, final String presentationId, final List<Slide> request, final String currentUserId);
 

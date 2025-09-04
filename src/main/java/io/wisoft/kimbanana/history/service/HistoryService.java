@@ -28,7 +28,7 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-    public History findByHistoryId(final String historyId) {
+    public List<History> findByHistoryId(final String historyId) {
         return historyRepository.findByHistoryId(historyId);
     }
 
@@ -40,7 +40,7 @@ public class HistoryService {
     }
 
     public HttpStatus restoreHistory(final String presentationId, final RestorePayload request) {
-        History history = historyRepository.findByHistoryId(request.getHistoryId());
+        List<History> history = historyRepository.findByHistoryId(request.getHistoryId());
         if (history == null) {
             return HttpStatus.NOT_FOUND;
         }
