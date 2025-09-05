@@ -5,13 +5,13 @@ import io.wisoft.kimbanana.presentation.dto.response.payload.TitlePayload;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcPresentationRepository implements PresentationRepository {
 
