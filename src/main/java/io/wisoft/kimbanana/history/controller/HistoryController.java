@@ -51,6 +51,7 @@ public class HistoryController {
     //히스토리 복원
     @PostMapping("/{presentation-id}/restorations")
     public ResponseEntity<HttpStatus> restoreHistory(@PathVariable("presentation-id") String presentationId, @RequestBody RestorePayload payload) {
+
         historyService.restoreHistory(presentationId, payload);
         return ResponseEntity.ok(HttpStatus.valueOf(303));
     }

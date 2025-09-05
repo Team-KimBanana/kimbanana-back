@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 public class HistoryService {
 
@@ -55,7 +56,9 @@ public class HistoryService {
         return batchId;
     }
 
+    @Transactional
     public HttpStatus restoreHistory(final String presentationId, final RestorePayload request) {
+        System.out.println("here" + request.getHistoryId());
         List<History> history = historyRepository.findByHistoryId(request.getHistoryId());
         if (history == null) {
             return HttpStatus.NOT_FOUND;

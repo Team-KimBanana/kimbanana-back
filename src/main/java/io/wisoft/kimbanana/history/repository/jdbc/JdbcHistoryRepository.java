@@ -51,12 +51,16 @@ public class JdbcHistoryRepository implements HistoryRepository {
         LocalDateTime now = LocalDateTime.now();
 
         for (Slide slide : request) {
+            System.out.println("here: " + slide.getSlideId());
+        }
+
+        for (Slide slide : request) {
             jdbcTemplate.update(connection -> {
                 PreparedStatement psmt = connection.prepareStatement(sql);
                 psmt.setString(1, batchId);
                 psmt.setTimestamp(2, Timestamp.valueOf(now));
-                psmt.setString(3, slide.getSlideId());
-                psmt.setString(4, currentUserId);
+                psmt.setString(3, currentUserId);
+                psmt.setString(4, slide.getSlideId());
                 psmt.setInt(5, slide.getSlideOrder());
                 psmt.setString(6, slide.getData().toString());
                 psmt.setString(7, presentationId);
@@ -70,7 +74,14 @@ public class JdbcHistoryRepository implements HistoryRepository {
     public void overwrite(String presentationId, String batchId, String currentUserId) {
         // 1. batchId로 history 데이터 조회 (순서 보장)
         String selectSql = "SELECT data, slide_order FROM history WHERE presentation_id = ? AND history_id = ? ORDER BY slide_order ASC";
+        System.out.println(batchId);
         List<Map<String, Object>> historySlides = jdbcTemplate.queryForList(selectSql, presentationId, batchId);
+
+        if (historySlides.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "presentation_id 에 해당하는 히스토리를 찾을 수 앖음 " + presentationId + "/history_id " + batchId
+            );
+        }
 
         // 2. 현재 presentation 슬라이드 삭제
         String deleteSql = "DELETE FROM slide WHERE presentation_id = ?";
@@ -86,7 +97,7 @@ public class JdbcHistoryRepository implements HistoryRepository {
                     slide.get("data").toString(),
                     presentationId,
                     slide.get("slide_order"),
-                    currentUserId// 원래 순서 그대로 복원
+                    currentUserId
             );
         }
     }

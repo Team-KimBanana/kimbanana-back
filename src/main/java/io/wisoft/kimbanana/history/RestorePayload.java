@@ -9,6 +9,7 @@ import lombok.Getter;
 public class RestorePayload {
     public String type;
 
+    @JsonProperty("history_id")
     private String historyId;
 
     @JsonProperty("last_revision_user_id")
