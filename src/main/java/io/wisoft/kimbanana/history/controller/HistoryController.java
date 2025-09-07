@@ -1,16 +1,10 @@
 package io.wisoft.kimbanana.history.controller;
 
-import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.HistoryDetailResponse;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.RestorePayload;
 import io.wisoft.kimbanana.history.SavePayload;
-import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.history.service.HistoryService;
-import io.wisoft.kimbanana.presentation.dto.response.payload.SlideAddPayload;
-import io.wisoft.kimbanana.presentation.entity.Presentation;
-import io.wisoft.kimbanana.presentation.entity.Slide;
-import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

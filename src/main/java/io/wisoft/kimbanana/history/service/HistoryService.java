@@ -5,7 +5,6 @@ import io.wisoft.kimbanana.history.HistoryDetailResponse;
 import io.wisoft.kimbanana.history.HistoryListResponse;
 import io.wisoft.kimbanana.history.Mapping;
 import io.wisoft.kimbanana.history.RestorePayload;
-import io.wisoft.kimbanana.history.SavePayload;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.util.List;
@@ -24,7 +23,6 @@ public class HistoryService {
 
     public List<HistoryListResponse> findByPresentationId(final String presentationId) {
         List<History> historyList = historyRepository.findByPresentationId(presentationId);
-        System.out.println(historyList);
         return historyList.stream()
                 .map(h -> new HistoryListResponse(h.getHistoryId(), h.getLastRevisionDate()))
                 .collect(Collectors.toList());
@@ -58,7 +56,6 @@ public class HistoryService {
 
     @Transactional
     public HttpStatus restoreHistory(final String presentationId, final RestorePayload request) {
-        System.out.println("here" + request.getHistoryId());
         List<History> history = historyRepository.findByHistoryId(request.getHistoryId());
         if (history == null) {
             return HttpStatus.NOT_FOUND;

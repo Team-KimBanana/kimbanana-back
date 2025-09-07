@@ -2,13 +2,8 @@ package io.wisoft.kimbanana.history.repository;
 
 import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.Mapping;
-import io.wisoft.kimbanana.history.RestorePayload;
-import io.wisoft.kimbanana.history.SavePayload;
-import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.util.List;
-import java.util.Map;
-import org.springframework.http.HttpStatus;
 
 public interface HistoryRepository {
 

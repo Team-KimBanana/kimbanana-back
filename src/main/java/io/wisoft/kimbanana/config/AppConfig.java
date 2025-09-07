@@ -5,7 +5,6 @@ import io.wisoft.kimbanana.history.repository.jdbc.JdbcHistoryRepository;
 import io.wisoft.kimbanana.history.service.HistoryService;
 import io.wisoft.kimbanana.image.repository.ImageUploadRepository;
 import io.wisoft.kimbanana.image.service.ImageService;
-import io.wisoft.kimbanana.presentation.event.PresentationEvents;
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
 import io.wisoft.kimbanana.presentation.service.PresentationService;

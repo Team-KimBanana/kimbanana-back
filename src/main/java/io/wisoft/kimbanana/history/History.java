@@ -1,9 +1,7 @@
 package io.wisoft.kimbanana.history;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 

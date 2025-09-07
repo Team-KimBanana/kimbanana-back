@@ -3,13 +3,9 @@ package io.wisoft.kimbanana.history.repository.jdbc;
 import io.wisoft.kimbanana.history.History;
 import io.wisoft.kimbanana.history.Mapping;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
-import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
-import io.wisoft.kimbanana.workspace.Workspace;
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,10 +43,6 @@ public class JdbcHistoryRepository implements HistoryRepository {
     public void addHistory(final String batchId, final String presentationId, final List<Slide> request, final String currentUserId) {
         String sql = "INSERT INTO history (history_id, last_revision_date, last_revision_user_id, slide_id, slide_order, data, presentation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
-
-        for (Slide slide : request) {
-            System.out.println("here: " + slide.getSlideId());
-        }
 
         for (Slide slide : request) {
             jdbcTemplate.update(connection -> {
