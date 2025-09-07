@@ -1,7 +1,6 @@
 package io.wisoft.kimbanana.presentation.controller;
 
 import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload.SlideStructure;
-import io.wisoft.kimbanana.presentation.dto.response.SlideEditResponse;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import io.wisoft.kimbanana.presentation.dto.response.payload.StructurePayload;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
@@ -27,20 +25,14 @@ public class PresentationWSController {
                           @DestinationVariable String currentSlideId,
                           @Payload Slide slide) {
 
-        System.out.println("slide edit: " + slide.getSlideId());
-        System.out.println("current slide: " + slide.getData());
         log.info("수정 요청 슬라이드: {}", slide.getSlideId());
 
         presentationService.updateSlide(presentationId, currentSlideId, slide);
     }
 
-
     @MessageMapping("/slide.edit.presentation.{presentationId:[^.]+}")
     public void editSlide(@DestinationVariable String presentationId, Presentation presentation) {
-
-        System.out.println(presentation.getPresentationId());
-        System.out.println(presentation.getPresentationId());
-        System.out.println(presentation.getSlides().size());
+        log.info("프레젠테이션 구조 편집 요청: {}", presentation.getPresentationId());
 
         List<SlideStructure> slideStructures = StructureConvert.structureList(presentation.getSlides());
         StructurePayload response = StructurePayload.builder()
