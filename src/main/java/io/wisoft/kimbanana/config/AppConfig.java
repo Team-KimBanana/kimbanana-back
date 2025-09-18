@@ -3,8 +3,9 @@ package io.wisoft.kimbanana.config;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.history.repository.jdbc.JdbcHistoryRepository;
 import io.wisoft.kimbanana.history.service.HistoryService;
-import io.wisoft.kimbanana.image.repository.ImageUploadRepository;
+import io.wisoft.kimbanana.image.repository.JdbcImageUploadRepository;
 import io.wisoft.kimbanana.image.service.ImageService;
+import io.wisoft.kimbanana.image.service.StorageService;
 import io.wisoft.kimbanana.presentation.repository.jdbc.JdbcPresentationRepository;
 import io.wisoft.kimbanana.presentation.repository.PresentationRepository;
 import io.wisoft.kimbanana.presentation.service.PresentationService;
@@ -55,13 +56,18 @@ public class AppConfig {
     }
 
     @Bean
-    public ImageUploadRepository imageUploadRepository() {
-        return new ImageUploadRepository(dataSource);
+    public JdbcImageUploadRepository imageUploadRepository() {
+        return new JdbcImageUploadRepository(dataSource);
+    }
+
+    @Bean
+    public StorageService storageService() {
+        return new StorageService();
     }
 
     @Bean
     public ImageService imageService() {
-        return new ImageService(imageUploadRepository());
+        return new ImageService(imageUploadRepository(), storageService());
     }
 }
 
