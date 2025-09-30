@@ -7,6 +7,7 @@ import io.wisoft.kimbanana.auth.dto.TokenResponse;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,9 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    public void signUp(SignUpRequest request) {
+    public Integer signUp(SignUpRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
         User user = User.builder()
@@ -30,7 +31,7 @@ public class AuthService {
                 .password(encoder.encode(request.getPassword()))
                 .build();
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 
@@ -39,7 +40,7 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
 
         if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호 불일치");
+            throw new BadCredentialsException("비밀번호 불일치");
         }
         String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
@@ -49,7 +50,7 @@ public class AuthService {
 
     public TokenResponse refresh(String refreshToken) {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("Refresh 토큰이 유효하지 않음");
+            throw new BadCredentialsException("Refresh 토큰이 유효하지 않음");
         }
 
         String email = jwtTokenProvider.getEmail(refreshToken);
