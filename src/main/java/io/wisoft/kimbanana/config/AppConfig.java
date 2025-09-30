@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
     private final DataSource dataSource;
 
+
     public AppConfig(DataSource dataSource) {
         this.dataSource = dataSource;
     }
