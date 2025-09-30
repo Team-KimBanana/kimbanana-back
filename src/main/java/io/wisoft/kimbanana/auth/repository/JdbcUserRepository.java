@@ -1,6 +1,5 @@
 package io.wisoft.kimbanana.auth.repository;
 
-import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.wisoft.kimbanana.auth.User;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,8 +25,6 @@ public class JdbcUserRepository implements UserRepository {
                     .email(rs.getString("email"))
                     .name(rs.getString("name"))
                     .password(rs.getString("password"))
-                    .provider(rs.getString("provider"))
-                    .providerId(rs.getString("providerId"))
                     .build(), email);
 
             return Optional.ofNullable(user);
