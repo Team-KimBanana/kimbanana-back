@@ -29,6 +29,8 @@ public class AuthService {
                 .email(request.getEmail())
                 .name(request.getName())
                 .password(encoder.encode(request.getPassword()))
+                .provider("kimbanana")
+                .providerId("jwt_kimbanana")
                 .build();
 
         return userRepository.save(user);

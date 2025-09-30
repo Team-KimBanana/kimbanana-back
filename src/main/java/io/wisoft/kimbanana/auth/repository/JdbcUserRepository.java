@@ -26,6 +26,8 @@ public class JdbcUserRepository implements UserRepository {
                     .email(rs.getString("email"))
                     .name(rs.getString("name"))
                     .password(rs.getString("password"))
+                    .provider(rs.getString("provider"))
+                    .providerId(rs.getString("providerId"))
                     .build(), email);
 
             return Optional.ofNullable(user);
@@ -36,7 +38,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public Integer save(final User user) {
-        String sql = "INSERT INTO users (email, name, password) VALUES (?, ?, ?)";
-        return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword());
+        String sql = "INSERT INTO users (email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
     }
 }
