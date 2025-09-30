@@ -4,6 +4,7 @@ import io.wisoft.kimbanana.auth.User;
 import io.wisoft.kimbanana.auth.dto.SignInRequest;
 import io.wisoft.kimbanana.auth.dto.SignUpRequest;
 import io.wisoft.kimbanana.auth.dto.TokenResponse;
+import io.wisoft.kimbanana.auth.dto.UserInfoResponse;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,15 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+
+    public UserInfoResponse getUserInfo(String accessToken) {
+        String email = jwtTokenProvider.getEmail(accessToken);
+        User user  =  userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        return new UserInfoResponse(user.getId(), user.getEmail(), user.getName());
+
+    }
 
     public Integer signUp(SignUpRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
