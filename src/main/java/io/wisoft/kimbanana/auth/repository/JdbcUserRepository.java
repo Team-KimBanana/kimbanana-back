@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.auth.repository;
 
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.wisoft.kimbanana.auth.User;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -34,8 +35,8 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public void save(final User user) {
+    public Integer save(final User user) {
         String sql = "INSERT INTO users (email, name, password) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword());
+        return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword());
     }
 }

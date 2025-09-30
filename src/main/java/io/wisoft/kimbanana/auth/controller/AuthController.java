@@ -49,7 +49,7 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
         if(request.getEmail() == null || request.getPassword() == null) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("이메일과 비밀번호는 필수입니다.");
         }
 
         return ResponseEntity.ok(authService.signIn(request));
@@ -57,10 +57,13 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestHeader("Authorization") String header) {
+        if(header == null || !header.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Authorization 헤더는 필수입니다");
+        }
         String refreshToken = header.replace("Bearer ", "");
 
         if(refreshToken.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("리프레시 토큰이 비어있습니다.");
         }
 
         return ResponseEntity.ok(authService.refresh(refreshToken));
