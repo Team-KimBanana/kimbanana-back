@@ -2,6 +2,7 @@ package io.wisoft.kimbanana.auth.repository;
 
 import io.wisoft.kimbanana.auth.User;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,10 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public Integer save(final User user) {
-        String sql = "INSERT INTO users (email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
+        String sql = "INSERT INTO users (id, email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        String id = "u_" + UUID.randomUUID();
+
+        return jdbcTemplate.update(sql,id,  user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
     }
 }
