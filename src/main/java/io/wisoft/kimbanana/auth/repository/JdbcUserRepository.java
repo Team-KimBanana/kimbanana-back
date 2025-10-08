@@ -22,7 +22,7 @@ public class JdbcUserRepository implements UserRepository {
 
         try {
             User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> User.builder()
-                    .id(rs.getLong("id"))
+                    .id(rs.getString("id"))
                     .email(rs.getString("email"))
                     .name(rs.getString("name"))
                     .password(rs.getString("password"))
