@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.workspace.Workspace;
+import io.wisoft.kimbanana.workspace.dto.PresentationRequest;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Workspace-Controller" , description = "워크스페이스 관련 API")
+@Tag(name = "Workspace-Controller", description = "워크스페이스 관련 API")
 @RestController
 @RequestMapping("/api/workspace/presentations")
 public class WorkspaceController {
@@ -36,8 +37,8 @@ public class WorkspaceController {
     @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = Workspace.class))))
     @GetMapping()
-    public ResponseEntity<List<Workspace>> getAllSPresentation() {
-        return ResponseEntity.ok(workspaceService.findAllPresentation());
+    public ResponseEntity<List<Workspace>> getAllSPresentation(@RequestBody PresentationRequest request) {
+        return ResponseEntity.ok(workspaceService.findAllPresentation(request.getUserId()));
     }
 
     @Operation(summary = "단일 프레젠테이션 조회", description = "프레젠테이션 ID로 워크스페이스의 특정 프레젠테이션을 조회합니다.")
