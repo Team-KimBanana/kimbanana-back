@@ -36,7 +36,7 @@ public class WorkspaceController {
     @Operation(summary = "프레젠테이션 전체 목록 조회", description = "워크스페이스에 포함된 모든 프레젠테이션을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = Workspace.class))))
-    @GetMapping()
+    @PostMapping("/list")
     public ResponseEntity<List<Workspace>> getAllSPresentation(@RequestBody PresentationRequest request) {
         return ResponseEntity.ok(workspaceService.findAllPresentation(request.getUserId()));
     }
