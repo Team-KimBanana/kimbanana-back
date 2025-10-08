@@ -11,8 +11,8 @@ public class WorkspaceService {
         this.workspaceRepository = workspaceRepository;
     }
 
-    public List<Workspace> findAllPresentation() {
-        return workspaceRepository.findAllPresentation();
+    public List<Workspace> findAllPresentation(String userId) {
+        return workspaceRepository.findAllPresentation(userId);
     }
 
     public Workspace findPresentation(final String presentationId) {

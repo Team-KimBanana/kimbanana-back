@@ -23,11 +23,11 @@ public class JdbcWorkspaceRepository implements WorkspaceRepository {
     }
 
     @Override
-    public List<Workspace> findAllPresentation() {
-        String sql = "SELECT p.presentation_id, p.presentation_title, p.last_revision_date, p.user_id, t.thumbnail_url FROM presentation p LEFT JOIN presentation_thumbnail t ON p.presentation_id = t.presentation_id";
-        List<Workspace> presentationList = jdbcTemplate.query(sql,rowMapper());
+    public List<Workspace> findAllPresentation(String userId) {
+        String sql = "SELECT p.presentation_id, p.presentation_title, p.last_revision_date, p.user_id, t.thumbnail_url FROM presentation p LEFT JOIN presentation_thumbnail t ON p.presentation_id = t.presentation_id WHERE p.user_id = ?";
+        List<Workspace> presentationList = jdbcTemplate.query(sql, rowMapper(), userId);
         log.debug("presentationList: {}", presentationList);
-        return jdbcTemplate.query(sql, rowMapper());
+        return jdbcTemplate.query(sql, rowMapper(), userId);
     }
 
     @Override

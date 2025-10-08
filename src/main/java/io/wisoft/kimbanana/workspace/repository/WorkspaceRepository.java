@@ -4,7 +4,7 @@ import io.wisoft.kimbanana.workspace.Workspace;
 import java.util.List;
 
 public interface WorkspaceRepository {
-    List<Workspace> findAllPresentation();
+    List<Workspace> findAllPresentation(String userId);
 
     String add(final String userId);
 
