@@ -1,7 +1,9 @@
 package io.wisoft.kimbanana.config;
 
-import io.wisoft.kimbanana.auth.jwt.JwtHandshakeInterceptor;
+import io.wisoft.kimbanana.auth.jwt.StompAuthChannelInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -9,13 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
-
-    public WebSocketConfig(final JwtHandshakeInterceptor jwtHandshakeInterceptor) {
-        this.jwtHandshakeInterceptor = jwtHandshakeInterceptor;
-    }
+    private final StompAuthChannelInterceptor stompAuthChannelInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -27,8 +26,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
                 .addEndpoint("/ws-api")
-                .setAllowedOrigins("https://daisy.wisoft.io", "http://localhost:5173", " http://192.168.0.100:5173")
-                .addInterceptors(jwtHandshakeInterceptor);
+                .setAllowedOriginPatterns("*");
+    }
+
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(stompAuthChannelInterceptor);
     }
 
 }
