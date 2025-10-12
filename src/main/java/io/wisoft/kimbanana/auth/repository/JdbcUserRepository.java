@@ -35,6 +35,24 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findById(final String userId) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try {
+            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> User.builder()
+                    .id(rs.getString("id"))
+                    .email(rs.getString("email"))
+                    .name(rs.getString("name"))
+                    .password(rs.getString("password"))
+                    .build(), userId);
+
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public Integer save(final User user) {
         String sql = "INSERT INTO users (id, email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?, ?)";
 
