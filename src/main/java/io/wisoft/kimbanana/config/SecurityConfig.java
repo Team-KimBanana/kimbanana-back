@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 "/api/auth/refresh",
                                 "/slide-images/**",
                                 "/presentation-thumbnails/**",
-                                "/api/ws-api/**",
+                                "/ws-api/**",
                                 "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
