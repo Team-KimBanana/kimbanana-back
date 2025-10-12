@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.auth.jwt.JwtHandshakeInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,6 +11,12 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
+
+    public WebSocketConfig(final JwtHandshakeInterceptor jwtHandshakeInterceptor) {
+        this.jwtHandshakeInterceptor = jwtHandshakeInterceptor;
+    }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");  //구독 prefix
@@ -19,8 +26,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/ws-api")  //클라이언트 초기 연결할 때 사용하는 URL
-                .setAllowedOrigins("*");
+                .addEndpoint("/ws-api")
+                .setAllowedOrigins("https://daisy.wisoft.io", "http://localhost:5173")
+                .addInterceptors(jwtHandshakeInterceptor);
     }
 
 }

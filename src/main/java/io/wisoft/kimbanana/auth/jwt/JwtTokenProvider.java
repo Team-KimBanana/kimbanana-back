@@ -10,7 +10,6 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,25 +34,25 @@ public class JwtTokenProvider {
         this.userRepository = userRepository;
     }
 
-    public String generateAccessToken(String email) {
-        return createToken(email, accessValidity);
+    public String generateAccessToken(String userId) {
+        return createToken(userId, accessValidity);
     }
 
-    public String generateRefreshToken(String email) {
-        return createToken(email, refreshValidity);
+    public String generateRefreshToken(String userId) {
+        return createToken(userId, refreshValidity);
     }
 
-    private String createToken(String email, long validity) {
+    private String createToken(String userId, long validity) {
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(userId)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + validity))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String getEmail(String token) {
+    public String getUserId(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token)
                 .getBody().getSubject();
@@ -70,9 +69,9 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        String email = getEmail(token);
+        String userId = getUserId(token);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
         return new UsernamePasswordAuthenticationToken(

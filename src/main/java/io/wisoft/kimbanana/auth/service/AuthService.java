@@ -22,8 +22,8 @@ public class AuthService {
 
 
     public UserInfoResponse getUserInfo(String accessToken) {
-        String email = jwtTokenProvider.getEmail(accessToken);
-        User user  =  userRepository.findByEmail(email)
+        String userId = jwtTokenProvider.getUserId(accessToken);
+        User user  =  userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
         return new UserInfoResponse(user.getId(), user.getEmail(), user.getName());
@@ -54,8 +54,8 @@ public class AuthService {
         if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호 불일치");
         }
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
         return new TokenResponse(accessToken, refreshToken);
     }
@@ -65,8 +65,8 @@ public class AuthService {
             throw new BadCredentialsException("Refresh 토큰이 유효하지 않음");
         }
 
-        String email = jwtTokenProvider.getEmail(refreshToken);
-        String newAccessToken = jwtTokenProvider.generateAccessToken(email);
+        String userId = jwtTokenProvider.getUserId(refreshToken);
+        String newAccessToken = jwtTokenProvider.generateAccessToken(userId);
 
         return new TokenResponse(newAccessToken, refreshToken); // 기존 refresh 재사용
     }
