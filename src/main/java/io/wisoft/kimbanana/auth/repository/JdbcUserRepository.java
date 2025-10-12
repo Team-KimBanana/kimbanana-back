@@ -57,6 +57,7 @@ public class JdbcUserRepository implements UserRepository {
         String sql = "INSERT INTO users (id, email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         String id = "u_" + UUID.randomUUID();
+        user.setId(id);
 
         return jdbcTemplate.update(sql,id,  user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
     }
