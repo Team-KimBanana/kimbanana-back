@@ -31,9 +31,11 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             String header = httpRequest.getHeader("Authorization");
 
             if (header != null && header.startsWith("Bearer ")) {
+                System.out.println("Bearer " + header);
                 String token = header.substring(7);
                 try {
                     if(jwtTokenProvider.validateToken(token)) {
+                        System.out.println("JWT Token is valid");
                         String userId = jwtTokenProvider.getUserId(token);
                         attributes.put("userId", userId);
                         return true;
