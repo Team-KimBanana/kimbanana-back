@@ -43,13 +43,13 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest request) {
 
-        if(!request.getEmail().matches(EMAIL_REGEX)) {
+        if(!request.email().matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다");
         }
-        if (!request.getName().matches(USERNAME_REGEX)) {
+        if (!request.name().matches(USERNAME_REGEX)) {
             throw new IllegalArgumentException("이름이 형식이 올바르지 않습니다");
         }
-        if (!request.getPassword().matches(PASSWORD_REGEX)) {
+        if (!request.password().matches(PASSWORD_REGEX)) {
             throw new IllegalArgumentException("비밀번호 형식이 올바르지 않습니다");
         }
 
@@ -63,7 +63,7 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
-        if(request.getEmail() == null || request.getPassword() == null) {
+        if(request.email() == null || request.password() == null) {
             throw new IllegalArgumentException("이메일과 비밀번호는 필수입니다.");
         }
 

@@ -1,17 +1,11 @@
 package io.wisoft.kimbanana.auth;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@Builder
-public class User {
-    private String id;
-    private String email;
-    private String name;
-    private String password;
-    private String provider;
-    private String providerId;
+public record User(
+        String id,
+        String email,
+        String name,
+        String password,
+        String provider,
+        String providerId
+) {
 }

@@ -2,7 +2,6 @@ package io.wisoft.kimbanana.auth.jwt;
 
 import io.wisoft.kimbanana.auth.User;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +29,14 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        if (accessor == null) return message;
+        if (accessor == null) {
+            return message;
+        }
 
         StompCommand cmd = accessor.getCommand();
-        if (cmd == null) return message;
+        if (cmd == null) {
+            return message;
+        }
 
         if (StompCommand.CONNECT.equals(cmd)) {
             String authHeader = accessor.getFirstNativeHeader("Authorization");
@@ -57,9 +60,9 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
                             user, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
             accessor.setUser(authentication);
-            accessor.setSessionAttributes(Map.of("userId", user.getId()));
+            accessor.setSessionAttributes(Map.of("userId", user.id()));
 
-            log.info("Authenticated user: {}", user.getId());
+            log.info("Authenticated user: {}", user.id());
         }
 
         return message;
