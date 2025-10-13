@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-    public static final String USERNAME_REGEX = "[a-zA-Z0-9_-]{3,}$";
-    public static final String PASSWORD_REGEX = "^(?=.*[a-zA-Z])(?=.*\\d).{6,}$";
-
+    public static final String USERNAME_REGEX = "^[a-zA-Z0-9가-힣_-]{3,}$";
+    public static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+=\\-{}\\[\\]:;\"'<>,.?/\\\\|`~]{6,}$";
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
