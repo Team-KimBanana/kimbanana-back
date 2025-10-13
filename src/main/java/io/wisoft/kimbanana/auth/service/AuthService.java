@@ -7,6 +7,7 @@ import io.wisoft.kimbanana.auth.dto.TokenResponse;
 import io.wisoft.kimbanana.auth.dto.UserInfoResponse;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,39 +24,41 @@ public class AuthService {
 
     public UserInfoResponse getUserInfo(String accessToken) {
         String userId = jwtTokenProvider.getUserId(accessToken);
-        User user  =  userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        return new UserInfoResponse(user.getId(), user.getEmail(), user.getName());
+        return new UserInfoResponse(user.id(), user.email(), user.name());
 
     }
 
     public Integer signUp(SignUpRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
-        User user = User.builder()
-                .email(request.getEmail())
-                .name(request.getName())
-                .password(encoder.encode(request.getPassword()))
-                .provider("kimbanana")
-                .providerId("jwt_kimbanana")
-                .build();
+        String id = "u_" + UUID.randomUUID();
+
+        User user = new User(
+                id,
+                request.email(),
+                request.name(),
+                encoder.encode(request.password()),
+                "kimbanana",
+                "jwt_kimbanana"
+        );
 
         return userRepository.save(user);
     }
 
-
     public TokenResponse signIn(SignInRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
 
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+        if (!encoder.matches(request.password(), user.password())) {
             throw new BadCredentialsException("비밀번호 불일치");
         }
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.id());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.id());
 
         return new TokenResponse(accessToken, refreshToken);
     }
