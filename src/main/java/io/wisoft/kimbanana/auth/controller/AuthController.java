@@ -29,7 +29,7 @@ public class AuthController {
     @GetMapping("/profile")
     public ResponseEntity<UserInfoResponse> getProfile(@RequestHeader("Authorization") String header) {
 
-        if(header == null || !header.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization 헤더는 필수입니다");
         }
 
@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest request) {
 
-        if(!request.email().matches(EMAIL_REGEX)) {
+        if (!request.email().matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다");
         }
         if (!request.name().matches(USERNAME_REGEX)) {
@@ -52,17 +52,13 @@ public class AuthController {
             throw new IllegalArgumentException("비밀번호 형식이 올바르지 않습니다");
         }
 
-        try {
-            authService.signUp(request);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        authService.signUp(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
-        if(request.email() == null || request.password() == null) {
+        if (request.email() == null || request.password() == null) {
             throw new IllegalArgumentException("이메일과 비밀번호는 필수입니다.");
         }
 
@@ -71,12 +67,12 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestHeader("Authorization") String header) {
-        if(header == null || !header.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization 헤더는 필수입니다");
         }
         String refreshToken = header.replace("Bearer ", "");
 
-        if(refreshToken.isEmpty()) {
+        if (refreshToken.isEmpty()) {
             throw new IllegalArgumentException("리프레시 토큰이 비어있습니다.");
         }
 
