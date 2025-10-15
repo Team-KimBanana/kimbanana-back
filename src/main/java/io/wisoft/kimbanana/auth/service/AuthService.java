@@ -27,7 +27,7 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        return new UserInfoResponse(user.id(), user.email(), user.name());
+        return new UserInfoResponse(user.getId(), user.getEmail(), user.getName());
 
     }
 
@@ -54,11 +54,11 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
 
-        if (!encoder.matches(request.password(), user.password())) {
+        if (!encoder.matches(request.password(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호 불일치");
         }
-        String accessToken = jwtTokenProvider.generateAccessToken(user.id());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.id());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
         return new TokenResponse(accessToken, refreshToken);
     }

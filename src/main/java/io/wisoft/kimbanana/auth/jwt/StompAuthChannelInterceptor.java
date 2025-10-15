@@ -60,9 +60,9 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
                             user, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
             accessor.setUser(authentication);
-            accessor.setSessionAttributes(Map.of("userId", user.id()));
+            accessor.setSessionAttributes(Map.of("userId", user.getId()));
 
-            log.info("Authenticated user: {}", user.id());
+            log.info("Authenticated user: {}", user.getId());
         }
 
         return message;

@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.auth.repository.JdbcUserRepository;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.history.repository.jdbc.JdbcHistoryRepository;
 import io.wisoft.kimbanana.history.service.HistoryService;

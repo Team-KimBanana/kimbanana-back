@@ -2,6 +2,8 @@ package io.wisoft.kimbanana.config;
 
 import io.wisoft.kimbanana.auth.jwt.JwtAuthenticationFilter;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
+import io.wisoft.kimbanana.auth.oauth.CustomOAuth2UserService;
+import io.wisoft.kimbanana.auth.oauth.OAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,10 +21,14 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, final OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
@@ -39,6 +45,10 @@ public class SecurityConfig {
                                 "/ws-api/**",
                                 "/ws/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
