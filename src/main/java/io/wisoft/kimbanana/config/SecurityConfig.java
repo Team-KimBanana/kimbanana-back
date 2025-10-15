@@ -4,6 +4,7 @@ import io.wisoft.kimbanana.auth.jwt.JwtAuthenticationFilter;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.oauth.CustomOAuth2UserService;
 import io.wisoft.kimbanana.auth.oauth.OAuth2SuccessHandler;
+import java.util.Locale;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/sign-up",
                                 "/api/auth/sign-in",
                                 "/api/auth/refresh",
+                                "/oauth2/**",
                                 "/slide-images/**",
                                 "/presentation-thumbnails/**",
                                 "/ws-api/**",
