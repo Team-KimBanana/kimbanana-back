@@ -65,7 +65,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         //허용할 origin
-        config.setAllowedOrigins(List.of(" https://daisy.wisoft.io", "http://localhost:5173"));
+        config.setAllowedOrigins(List.of("https://daisy.wisoft.io", "http://localhost:5173"));
 
         // 인증 헤더, Content-Type 등 명시적으로 허용
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
