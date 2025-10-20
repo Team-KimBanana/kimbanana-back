@@ -1,0 +1,856 @@
+openapi: 3.0.3
+info:
+  title: Kimbanana API
+  description: Kimbanana API 명세서입니다.
+  version: 1.0.0
+  contact:
+    name: Kimbanana Team
+    email: support@kimbanana.io
+
+servers:
+  - url: http://localhost:8080
+    description: 로컬 개발 서버
+  - url: https://daisy.wisoft.io/api
+    description: 프로덕션 서버
+
+tags:
+  - name: Auth
+    description: 인증 관련 API
+  - name: Workspace
+    description: 워크스페이스 관련 API
+  - name: Presentation
+    description: 프레젠테이션 관련 API
+  - name: Image
+    description: 이미지 처리 관련 API
+  - name: History
+    description: 히스토리(복원) 관련 API
+
+paths:
+  # ===== Auth API =====
+  /api/auth/profile:
+    get:
+      tags:
+        - Auth
+      summary: 사용자 프로필 조회
+      description: JWT 토큰을 통해 현재 로그인한 사용자의 프로필 정보를 조회합니다.
+      operationId: getProfile
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/sign-up:
+    post:
+      tags:
+        - Auth
+      summary: 회원가입
+      description: 새로운 사용자를 등록합니다.
+      operationId: signUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: 회원가입 성공
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/auth/sign-in:
+    post:
+      tags:
+        - Auth
+      summary: 로그인
+      description: 이메일과 비밀번호로 로그인하여 JWT 토큰을 발급받습니다.
+      operationId: signIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: 토큰 갱신
+      description: Refresh Token을 사용하여 새로운 Access Token을 발급받습니다.
+      operationId: refresh
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationHeader'
+      responses:
+        '200':
+          description: 토큰 갱신 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ===== Workspace API =====
+  /api/workspace/presentations/list:
+    post:
+      tags:
+        - Workspace
+      summary: 프레젠테이션 전체 목록 조회
+      description: 워크스페이스에 포함된 모든 프레젠테이션을 조회합니다.
+      operationId: getAllPresentations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PresentationRequest'
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workspace'
+
+  /api/workspace/presentations/{presentationId}:
+    get:
+      tags:
+        - Workspace
+      summary: 단일 프레젠테이션 조회
+      description: 프레젠테이션 ID로 워크스페이스의 특정 프레젠테이션을 조회합니다.
+      operationId: getPresentation
+      parameters:
+        - name: presentationId
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Workspace
+      summary: 프레젠테이션 삭제
+      description: 워크스페이스에서 특정 프레젠테이션을 삭제합니다.
+      operationId: removePresentation
+      parameters:
+        - name: presentationId
+          in: path
+          required: true
+          description: 삭제할 프레젠테이션 ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 삭제 성공 (본문 없음)
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/workspace/presentations:
+    post:
+      tags:
+        - Workspace
+      summary: 프레젠테이션 추가
+      description: 새로운 프레젠테이션을 워크스페이스에 추가합니다.
+      operationId: addPresentation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Presentation'
+      responses:
+        '200':
+          description: 생성된 프레젠테이션 ID 반환
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "pres-12345"
+
+  # ===== Presentation API =====
+  /api/presentations/{presentation-id}/slides:
+    get:
+      tags:
+        - Presentation
+      summary: 전체 슬라이드 조회
+      description: 프레젠테이션 ID로 전체 슬라이드 목록을 조회합니다.
+      operationId: getSlides
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
+
+    post:
+      tags:
+        - Presentation
+      summary: 슬라이드 추가
+      description: 새로운 슬라이드를 프레젠테이션에 추가합니다.
+      operationId: createSlide
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 추가 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlideAddPayload'
+
+    patch:
+      tags:
+        - Presentation
+      summary: 슬라이드 구조 수정
+      description: 프레젠테이션의 슬라이드 순서/구조를 수정합니다.
+      operationId: updateStructure
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StructurePayload'
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/presentations/{presentation-id}/slides/{slide-id}:
+    get:
+      tags:
+        - Presentation
+      summary: 단일 슬라이드 조회
+      description: 프레젠테이션 ID와 슬라이드 ID로 단일 슬라이드를 조회합니다.
+      operationId: getSlide
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+        - name: slide-id
+          in: path
+          required: true
+          description: 슬라이드 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlideWrapper'
+
+  /api/presentations/{presentation-id}/slides/title:
+    patch:
+      tags:
+        - Presentation
+      summary: 프레젠테이션 제목 수정
+      description: 프레젠테이션의 제목을 새로운 값으로 수정합니다.
+      operationId: updateTitle
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TitlePayload'
+      responses:
+        '204':
+          description: 제목 수정 성공 (응답 본문 없음)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # ===== Image API =====
+  /api/images/upload:
+    post:
+      tags:
+        - Image
+      summary: 이미지 URL 생성하기
+      description: 이미지 파일을 업로드하고 URL을 반환합니다.
+      operationId: uploadImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 업로드할 이미지 파일
+      responses:
+        '200':
+          description: 업로드 성공
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "https://cdn.kimbanana.io/images/12345.png"
+
+  /api/images/thumbnails/presentation:
+    post:
+      tags:
+        - Image
+      summary: 썸네일 이미지 URL 생성하기
+      description: 프레젠테이션의 썸네일 이미지를 업로드하고 URL을 반환합니다.
+      operationId: uploadThumbnails
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 업로드할 썸네일 이미지 파일
+                presentationId:
+                  type: string
+                  description: 프레젠테이션 ID
+      responses:
+        '200':
+          description: 업로드 성공
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "https://cdn.kimbanana.io/thumbnails/pres-12345.png"
+
+  # ===== History API =====
+  /api/presentations/{presentation-id}/histories:
+    get:
+      tags:
+        - History
+      summary: 전체 히스토리 목록 조회
+      description: 특정 프레젠테이션의 모든 히스토리 목록을 조회합니다.
+      operationId: getHistoryList
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoryListResponse'
+
+    post:
+      tags:
+        - History
+      summary: 히스토리 저장
+      description: 현재 슬라이드 상태를 히스토리에 저장합니다.
+      operationId: createHistory
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavePayload'
+      responses:
+        '200':
+          description: 저장 성공 (생성된 히스토리 ID 반환)
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "hist-12345"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/presentations/{presentation-id}/histories/{history-id}:
+    get:
+      tags:
+        - History
+      summary: 단일 히스토리 조회
+      description: history-id를 통해 상세 히스토리 정보를 조회합니다.
+      operationId: getHistory
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+        - name: history-id
+          in: path
+          required: true
+          description: 히스토리 ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/presentations/{presentation-id}/restorations:
+    post:
+      tags:
+        - History
+      summary: 히스토리 복원
+      description: 지정된 type 값에 따라 전체 또는 단일 슬라이드를 히스토리 상태로 복원합니다.
+      operationId: restoreHistory
+      parameters:
+        - name: presentation-id
+          in: path
+          required: true
+          description: 프레젠테이션 ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestorePayload'
+      responses:
+        '200':
+          description: 복원 요청 성공
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+# ===== Components =====
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT 토큰 인증 (Bearer {token})
+
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      description: JWT Bearer 토큰
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  schemas:
+    # ===== Auth Schemas =====
+    SignUpRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          description: 사용자 이름 (3자 이상, 영문/한글/숫자/특수문자(_,-) 가능)
+          pattern: '^[a-zA-Z0-9가-힣_-]{3,}$'
+          example: "김바나나"
+        email:
+          type: string
+          format: email
+          description: 이메일 주소
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$'
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          description: 비밀번호 (6자 이상, 영문+숫자 필수)
+          pattern: '^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+=\-{}\[\]:;"''<>,.?/\\|`~]{6,}$'
+          example: "password123"
+
+    SignInRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: 이메일 주소
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          description: 비밀번호
+          example: "password123"
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT Access Token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          description: JWT Refresh Token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    UserInfoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 사용자 ID
+          example: "user-12345"
+        email:
+          type: string
+          format: email
+          description: 이메일 주소
+          example: "user@example.com"
+        name:
+          type: string
+          description: 사용자 이름
+          example: "김바나나"
+
+    # ===== Workspace Schemas =====
+    PresentationRequest:
+      type: object
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+          description: 사용자 ID
+          example: "user-12345"
+
+    Workspace:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 워크스페이스 ID
+          example: "ws-12345"
+        userId:
+          type: string
+          description: 사용자 ID
+          example: "user-12345"
+        presentations:
+          type: array
+          description: 프레젠테이션 목록
+          items:
+            $ref: '#/components/schemas/Presentation'
+
+    # ===== Presentation Schemas =====
+    Presentation:
+      type: object
+      properties:
+        presentationId:
+          type: string
+          description: 프레젠테이션 ID
+          example: "pres-12345"
+        userId:
+          type: string
+          description: 사용자 ID
+          example: "user-12345"
+        title:
+          type: string
+          description: 프레젠테이션 제목
+          example: "나의 발표 자료"
+        slides:
+          type: array
+          description: 슬라이드 목록
+          items:
+            $ref: '#/components/schemas/Slide'
+        createdAt:
+          type: string
+          format: date-time
+          description: 생성 일시
+          example: "2025-10-19T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: 수정 일시
+          example: "2025-10-19T15:30:00Z"
+
+    Slide:
+      type: object
+      properties:
+        slideId:
+          type: string
+          description: 슬라이드 ID
+          example: "slide-12345"
+        order:
+          type: integer
+          description: 슬라이드 순서
+          example: 1
+        content:
+          type: object
+          description: 슬라이드 내용 (구조는 프로젝트에 따라 다름)
+          additionalProperties: true
+
+    SlideWrapper:
+      type: object
+      properties:
+        slide:
+          $ref: '#/components/schemas/Slide'
+
+    SlideAddPayload:
+      type: object
+      properties:
+        slideId:
+          type: string
+          description: 생성된 슬라이드 ID
+          example: "slide-12345"
+        order:
+          type: integer
+          description: 슬라이드 순서
+          example: 5
+
+    StructurePayload:
+      type: object
+      required:
+        - slideIds
+      properties:
+        slideIds:
+          type: array
+          description: 새로운 슬라이드 순서 배열
+          items:
+            type: string
+          example: ["slide-001", "slide-003", "slide-002"]
+
+    TitlePayload:
+      type: object
+      required:
+        - newTitle
+      properties:
+        newTitle:
+          type: string
+          description: 새로운 프레젠테이션 제목
+          example: "수정된 발표 자료"
+
+    # ===== History Schemas =====
+    HistoryListResponse:
+      type: object
+      properties:
+        historyId:
+          type: string
+          description: 히스토리 ID
+          example: "hist-12345"
+        presentationId:
+          type: string
+          description: 프레젠테이션 ID
+          example: "pres-12345"
+        createdAt:
+          type: string
+          format: date-time
+          description: 저장 일시
+          example: "2025-10-19T10:00:00Z"
+        createdBy:
+          type: string
+          description: 저장한 사용자 ID
+          example: "user-12345"
+
+    HistoryDetailResponse:
+      type: object
+      properties:
+        historyId:
+          type: string
+          description: 히스토리 ID
+          example: "hist-12345"
+        presentationId:
+          type: string
+          description: 프레젠테이션 ID
+          example: "pres-12345"
+        slides:
+          type: array
+          description: 저장된 슬라이드 목록
+          items:
+            $ref: '#/components/schemas/Slide'
+        createdAt:
+          type: string
+          format: date-time
+          description: 저장 일시
+          example: "2025-10-19T10:00:00Z"
+        createdBy:
+          type: string
+          description: 저장한 사용자 ID
+          example: "user-12345"
+
+    SavePayload:
+      type: object
+      required:
+        - slides
+        - currentUserId
+      properties:
+        slides:
+          type: array
+          description: 저장할 슬라이드 목록
+          items:
+            $ref: '#/components/schemas/Slide'
+        currentUserId:
+          type: string
+          description: 현재 사용자 ID
+          example: "user-12345"
+
+    RestorePayload:
+      type: object
+      required:
+        - historyId
+        - type
+      properties:
+        historyId:
+          type: string
+          description: 복원할 히스토리 ID
+          example: "hist-12345"
+        type:
+          type: string
+          enum: [full, single]
+          description: 복원 타입 (full=전체 복원, single=단일 슬라이드 복원)
+          example: "full"
+        slideId:
+          type: string
+          description: 단일 복원 시 대상 슬라이드 ID (type이 single인 경우 필수)
+          example: "slide-12345"
+
+    # ===== Error Schemas =====
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: 에러 발생 시각
+          example: "2025-10-19T10:00:00Z"
+        status:
+          type: integer
+          description: HTTP 상태 코드
+          example: 400
+        error:
+          type: string
+          description: 에러 타입
+          example: "Bad Request"
+        message:
+          type: string
+          description: 에러 메시지
+          example: "이메일 형식이 올바르지 않습니다"
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth/sign-up"
+
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2025-10-19T10:00:00Z"
+            status: 400
+            error: "Bad Request"
+            message: "잘못된 요청 데이터"
+            path: "/api/presentations/pres-12345/slides"
+
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2025-10-19T10:00:00Z"
+            status: 401
+            error: "Unauthorized"
+            message: "Authorization 헤더는 필수입니다"
+            path: "/api/auth/profile"
+
+    NotFound:
+      description: 리소스를 찾을 수 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2025-10-19T10:00:00Z"
+            status: 404
+            error: "Not Found"
+            message: "존재하지 않는 프레젠테이션"
+            path: "/api/workspace/presentations/invalid-id"
