@@ -48,7 +48,12 @@ public class SecurityConfig {
                                 "/slide-images/**",
                                 "/presentation-thumbnails/**",
                                 "/ws-api/**",
-                                "/ws/**").permitAll()
+                                "/ws/**",
+                                "/kimbanana/app/swagger-ui/**",
+                                "/kimbanana/app/openapi/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
