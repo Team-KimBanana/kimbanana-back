@@ -20,67 +20,37 @@ import java.util.Collections;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
 
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
-        // 현재 로그인 진행 중인 서비스를 구분하는 코드 (예: google, github)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-
-        // OAuth2 로그인 시 키가 되는 필드값 (기본: "sub")
         String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
+                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        // OAuth2User의 attributes를 OAuthAttributes로 변환
-        OAuthAttributes attributes = OAuthAttributes.of(
-                registrationId,
-                userNameAttributeName,
-                oAuth2User.getAttributes()
-        );
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        Integer result = saveOrUpdate(attributes);
-        if (result == 0) {
-            throw new OAuth2AuthenticationException("사용자 저장 실패");
+        String email = attributes.getEmail();
+        if (email == null || email.isBlank()) {
+            throw new OAuth2AuthenticationException(new org.springframework.security.oauth2.core.OAuth2Error("invalid_token"),
+                    "프로필에 이메일이 없습니다. scope(openid email profile)와 email_verified를 확인하세요.");
         }
 
-        User user = userRepository.findByEmail(attributes.getEmail())
-                .orElseThrow(() -> new OAuth2AuthenticationException("사용자 조회 실패"));
-
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
-
-        // 세션에 사용자 저장 (선택적)
-        httpSession.setAttribute("user", user);
-        httpSession.setAttribute("accessToken", accessToken);
-        httpSession.setAttribute("refreshToken", refreshToken);
+        // upsert
+        User user = userRepository.findByEmail(email)
+                .map(u -> u.update(attributes.getName()))
+                .orElseGet(attributes::toEntity);
+        userRepository.save(user);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey()
         );
-    }
-
-    /**
-     * 이메일 기준으로 사용자 정보 저장/업데이트
-     * @return 성공 시 1, 실패 시 0
-     */
-    private Integer saveOrUpdate(OAuthAttributes attributes) {
-        User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName()))
-                .orElse(attributes.toEntity());
-
-        return userRepository.save(user);
     }
 }
