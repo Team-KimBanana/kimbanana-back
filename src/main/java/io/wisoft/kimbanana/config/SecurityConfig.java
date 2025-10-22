@@ -38,13 +38,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/sign-up",
                                 "/api/auth/sign-in",
                                 "/api/auth/refresh",
                                 "/oauth2/**",
+                                "/login/oauth2/**",
                                 "/slide-images/**",
                                 "/presentation-thumbnails/**",
                                 "/ws-api/**",
@@ -94,4 +95,8 @@ public class SecurityConfig {
         return this.passwordEncoder;
     }
 
+    @Bean
+    org.springframework.web.filter.ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new org.springframework.web.filter.ForwardedHeaderFilter();
+    }
 }
