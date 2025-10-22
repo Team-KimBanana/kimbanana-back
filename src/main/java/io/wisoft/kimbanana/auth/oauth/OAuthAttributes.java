@@ -4,6 +4,8 @@ import io.wisoft.kimbanana.auth.User;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 
 @Getter
 public class OAuthAttributes {
@@ -26,8 +28,13 @@ public class OAuthAttributes {
         this.providerId = providerId;
     }
 
-    public  static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-        return ofGoogle(registrationId, userNameAttributeName, attributes);
+    public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+        switch (registrationId) {
+            case "google": return ofGoogle(registrationId, userNameAttributeName, attributes);
+            // case "github": return ofGithub(...);
+            default: throw new OAuth2AuthenticationException(new OAuth2Error("unsupported_provider"),
+                    "지원하지 않는 OAuth2 제공자: " + registrationId);
+        }
     }
 
     private static OAuthAttributes ofGoogle(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {

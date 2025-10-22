@@ -23,27 +23,29 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final UserRepository userRepository;
 
     @Override
-    public void onAuthenticationSuccess(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
+            throws IOException, ServletException {
 
-        // OAuth2User에서 이메일 추출
-        String email = ((org.springframework.security.oauth2.core.user.OAuth2User) authentication.getPrincipal())
-                .getAttribute("email");
+        var principal = (org.springframework.security.oauth2.core.user.OAuth2User) auth.getPrincipal();
+        String email = principal.getAttribute("email");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("사용자 조회 실패"));
 
-        // 사용자 조회
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자 조회 실패"));
-
-        // JWT 발급
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
-        String redirectUrl = "https://daisy.wisoft.io/kimbanana/ui"
-                + "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
+        addCookie(res, "access_token", accessToken, /*maxAgeSec*/ 60 * 15);
+        addCookie(res, "refresh_token", refreshToken, /*maxAgeSec*/ 60 * 60 * 24 * 14);
 
-        response.sendRedirect(redirectUrl);
+        res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui");
+    }
+
+    private void addCookie(HttpServletResponse res, String name, String value, int maxAgeSec) {
+        jakarta.servlet.http.Cookie c = new jakarta.servlet.http.Cookie(name, value);
+        c.setHttpOnly(true);
+        c.setSecure(true);
+        c.setPath("/");
+        c.setMaxAge(maxAgeSec);
+        res.addHeader("Set-Cookie",
+                String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict", name, value, maxAgeSec));
     }
 }
