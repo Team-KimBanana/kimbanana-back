@@ -5,6 +5,8 @@ import io.wisoft.kimbanana.auth.dto.SignUpRequest;
 import io.wisoft.kimbanana.auth.dto.TokenResponse;
 import io.wisoft.kimbanana.auth.dto.UserInfoResponse;
 import io.wisoft.kimbanana.auth.service.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,16 +29,31 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserInfoResponse> getProfile(@RequestHeader("Authorization") String header) {
-
-        if (header == null || !header.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Authorization 헤더는 필수입니다");
+    public ResponseEntity<UserInfoResponse> getProfile(HttpServletRequest request, @RequestHeader(value="Authorization", required = false) String header) {
+        String token = resolveToken(request, header);
+        if (token == null) {
+            throw new IllegalArgumentException("토큰이 없습니다. Authorization 헤더 또는 access_token 쿠키가 필요합니다.");
         }
 
-        String accessToken = header.replace("Bearer ", "");
-
-        UserInfoResponse user = authService.getUserInfo(accessToken);
+        UserInfoResponse user = authService.getUserInfo(token);
         return ResponseEntity.ok(user);
+    }
+
+    private String resolveToken(final HttpServletRequest request, final String header) {
+        // 1) Authorization: Bearer ...
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        // 2) Cookie: access_token=...
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if ("access_token".equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
+                    return c.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     @PostMapping("/sign-up")
