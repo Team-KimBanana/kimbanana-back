@@ -4,6 +4,8 @@ import io.wisoft.kimbanana.auth.jwt.JwtAuthenticationFilter;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.oauth.CustomOAuth2UserService;
 import io.wisoft.kimbanana.auth.oauth.OAuth2SuccessHandler;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
