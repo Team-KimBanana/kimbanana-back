@@ -35,16 +35,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        String email = attributes.getEmail();
-        if (email == null || email.isBlank()) {
-            throw new OAuth2AuthenticationException(new org.springframework.security.oauth2.core.OAuth2Error("invalid_token"),
-                    "프로필에 이메일이 없습니다. scope(openid email profile)와 email_verified를 확인하세요.");
+        if (attributes.getEmail() == null || attributes.getEmail().isBlank()) {
+            throw new OAuth2AuthenticationException(new org.springframework.security.oauth2.core.OAuth2Error("invalid_userinfo"),
+                    "프로필에 이메일이 없습니다. scope를 확인하세요.");
         }
 
         // upsert
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(attributes.getEmail())
                 .map(u -> u.update(attributes.getName()))
-                .orElseGet(attributes::toEntity);
+                .orElse(attributes.toEntity());
         userRepository.save(user);
 
         return new DefaultOAuth2User(

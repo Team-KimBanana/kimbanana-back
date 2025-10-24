@@ -27,14 +27,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
 
         var principal = (org.springframework.security.oauth2.core.user.OAuth2User) auth.getPrincipal();
-        String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("사용자 조회 실패"));
+        String userId = principal.getAttribute("user_id");
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+        String accessToken = jwtTokenProvider.generateAccessToken(userId);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
-        addCookie(res, "access_token", accessToken, /*maxAgeSec*/ 60 * 15);
-        addCookie(res, "refresh_token", refreshToken, /*maxAgeSec*/ 60 * 60 * 24 * 14);
+        addCookie(res, "access_token", accessToken, 60 * 15);
+        addCookie(res, "refresh_token", refreshToken,  60 * 60 * 24 * 14);
 
         res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui");
     }

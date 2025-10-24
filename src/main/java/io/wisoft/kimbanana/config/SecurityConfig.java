@@ -61,6 +61,11 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                         .failureUrl("/kimbanana/ui?oauth=fail")
+                        .failureHandler((req, res, ex) -> {
+                            ex.printStackTrace(); // 콘솔에 원인 로그 남김
+                            String reason = URLEncoder.encode(ex.getMessage(), StandardCharsets.UTF_8);
+                            res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui?oauth=fail&reason=" + reason);
+                        })
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
