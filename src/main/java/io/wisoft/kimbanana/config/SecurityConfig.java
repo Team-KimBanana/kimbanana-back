@@ -3,6 +3,7 @@ package io.wisoft.kimbanana.config;
 import io.wisoft.kimbanana.auth.jwt.JwtAuthenticationFilter;
 import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
 import io.wisoft.kimbanana.auth.oauth.CustomOAuth2UserService;
+import io.wisoft.kimbanana.auth.oauth.CustomOidcUserService;
 import io.wisoft.kimbanana.auth.oauth.OAuth2SuccessHandler;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -29,12 +30,14 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, final OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, final OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService, CustomOidcUserService customOidcUserService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.customOidcUserService = customOidcUserService;
     }
 
     @Bean
@@ -60,7 +63,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                                .oidcUserService(customOidcUserService)
+                        )
                         .successHandler(oAuth2SuccessHandler)
                         .failureUrl("/kimbanana/ui?oauth=fail")
                         .failureHandler((req, res, ex) -> {
