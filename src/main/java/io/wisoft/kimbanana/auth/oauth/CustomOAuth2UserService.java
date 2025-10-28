@@ -46,6 +46,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .orElse(attributes.toEntity());
         userRepository.save(user);
 
+        java.util.Map<String, Object> enrichedAttributes = new java.util.HashMap<>(attributes.getAttributes());
+        enrichedAttributes.put("user_id", user.getId());
+
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 attributes.getAttributes(),

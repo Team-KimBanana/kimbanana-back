@@ -45,7 +45,14 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public Integer save(final User user) {
-        String sql = "INSERT INTO users (id, email, name, password, provider, provider_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, name, password, provider, provider_id) "
+                + "VALUES (?, ?, ?, ?, ?) "
+                + "ON CONFLICT (email) "
+                + "DO UPDATE "
+                + "SET name = EXCLUDED.name, "
+                + "provider = EXCLUDED.provider, "
+                + "provider_id = EXCLUDED.provider_id "
+                + "WHERE users.provider = EXCLUDED.provider";
 
         return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
     }
