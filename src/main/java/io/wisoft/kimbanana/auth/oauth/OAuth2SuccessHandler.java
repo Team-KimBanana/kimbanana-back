@@ -26,14 +26,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
             throws IOException, ServletException {
 
+        System.out.println(">>> [OAUTH] successHandler called");
+
         var principal = (org.springframework.security.oauth2.core.user.OAuth2User) auth.getPrincipal();
         String userId = principal.getAttribute("user_id");
+        System.out.println(">>> [OAUTH] successHandler principal attributes = " + principal.getAttributes());
+        System.out.println(">>> [OAUTH] successHandler rawUserId = " + userId);
 
         String accessToken = jwtTokenProvider.generateAccessToken(userId);
         String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
         addCookie(res, "access_token", accessToken, 60 * 15);
         addCookie(res, "refresh_token", refreshToken,  60 * 60 * 24 * 14);
+        System.out.println(">>> [OAUTH] cookies set, redirecting...");
 
         res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui");
     }
