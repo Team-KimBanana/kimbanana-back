@@ -29,16 +29,28 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         System.out.println(">>> [OAUTH] successHandler called");
 
         var principal = (org.springframework.security.oauth2.core.user.OAuth2User) auth.getPrincipal();
-        String userId = principal.getAttribute("user_id");
         System.out.println(">>> [DEBUG] principal class = " + principal.getClass().getName());
-        System.out.println(">>> [OAUTH] successHandler principal attributes = " + principal.getAttributes());
-        System.out.println(">>> [OAUTH] successHandler rawUserId = " + userId);
+        System.out.println(">>> [DEBUG] principal attrs = " + principal.getAttributes());
 
-        String accessToken = jwtTokenProvider.generateAccessToken(userId);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
+        String email = principal.getAttribute("email");
+        System.out.println(">>> [DEBUG] extracted email = " + email);
+
+        if (email == null || email.isBlank()) {
+            res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui?oauth=fail&reason=no-email");
+            return;
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("OAuth2SuccessHandler: DB user not found for email " + email));
+
+        System.out.println(">>> [DEBUG] found user id = " + user.getId());
+
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
         addCookie(res, "access_token", accessToken, 60 * 15);
-        addCookie(res, "refresh_token", refreshToken,  60 * 60 * 24 * 14);
+        addCookie(res, "refresh_token", refreshToken, 60 * 60 * 24 * 14);
+
         System.out.println(">>> [OAUTH] cookies set, redirecting...");
 
         res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui");
@@ -50,7 +62,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         c.setSecure(true);
         c.setPath("/");
         c.setMaxAge(maxAgeSec);
-        res.addHeader("Set-Cookie",
-                String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict", name, value, maxAgeSec));
+
+        res.addHeader(
+                "Set-Cookie",
+                String.format(
+                        "%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
+                        name, value, maxAgeSec
+                )
+        );
     }
 }
