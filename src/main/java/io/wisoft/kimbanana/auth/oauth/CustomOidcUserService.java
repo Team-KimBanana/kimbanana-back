@@ -1,10 +1,13 @@
 package io.wisoft.kimbanana.auth.oauth;
 
+import static java.util.Collections.singleton;
+
 import io.wisoft.kimbanana.auth.User;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +27,11 @@ public class CustomOidcUserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) {
-        // 먼저 기본 OIDC 유저 정보 받아오기 (id_token + userinfo)
         OidcUser oidcUser = super.loadUser(userRequest);
 
-        // 구글 프로필에서 attribute 추출
-        Map<String, Object> attributes = oidcUser.getAttributes();
-        String email = (String) attributes.get("email");
-        String name  = (String) attributes.get("name");
-        String sub   = (String) attributes.get("sub"); // Google unique id
+        String email = oidcUser.getAttribute("email");
+        String name  = oidcUser.getAttribute("name");
+        String sub   = oidcUser.getAttribute("sub"); // 구글 고유 ID
 
         if (email == null || email.isBlank()) {
             throw new OAuth2AuthenticationException(
@@ -40,7 +40,7 @@ public class CustomOidcUserService extends OidcUserService {
             );
         }
 
-        // upsert
+        // 3) upsert
         User user = userRepository.findByEmail(email)
                 .map(u -> u.update(name))
                 .orElse(User.builder()
@@ -50,18 +50,17 @@ public class CustomOidcUserService extends OidcUserService {
                         .provider("google")
                         .providerId(sub)
                         .build());
+
         userRepository.save(user);
 
-        // attributes에 우리 user_id 추가
-        Map<String, Object> enriched = new HashMap<>(attributes);
+        Map<String, Object> enriched = new HashMap<>(oidcUser.getAttributes());
         enriched.put("user_id", user.getId());
 
-        // DefaultOidcUser 다시 만들어서 반환
-        return new org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+        return new DefaultOidcUser(
+                singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 oidcUser.getIdToken(),
                 oidcUser.getUserInfo(),
-                "sub" // nameAttributeKey로 쓸 필드 (구글은 보통 "sub")
+                "sub"
         ) {
             @Override
             public Map<String, Object> getAttributes() {
