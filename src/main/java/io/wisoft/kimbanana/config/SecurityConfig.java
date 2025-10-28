@@ -32,9 +32,9 @@ public class SecurityConfig {
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider, final OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.passwordEncoder = new BCryptPasswordEncoder();
-        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean

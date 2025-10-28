@@ -30,6 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         var principal = (org.springframework.security.oauth2.core.user.OAuth2User) auth.getPrincipal();
         String userId = principal.getAttribute("user_id");
+        System.out.println(">>> [DEBUG] principal class = " + principal.getClass().getName());
         System.out.println(">>> [OAUTH] successHandler principal attributes = " + principal.getAttributes());
         System.out.println(">>> [OAUTH] successHandler rawUserId = " + userId);
 
