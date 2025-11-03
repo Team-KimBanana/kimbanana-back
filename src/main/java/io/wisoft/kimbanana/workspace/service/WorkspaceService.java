@@ -23,7 +23,7 @@ public class WorkspaceService {
         return workspaceRepository.add(userId);
     }
 
-    public int deletePresentation(final String presentationId) {
-        return workspaceRepository.delete(presentationId);
+    public void deletePresentation(final String presentationId) {
+        workspaceRepository.delete(presentationId);
     }
 }
