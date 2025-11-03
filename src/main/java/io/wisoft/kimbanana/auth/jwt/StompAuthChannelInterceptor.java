@@ -1,6 +1,8 @@
 package io.wisoft.kimbanana.auth.jwt;
 
+import io.wisoft.kimbanana.auth.GuestSession;
 import io.wisoft.kimbanana.auth.User;
+import io.wisoft.kimbanana.auth.repository.GuestSessionRepository;
 import io.wisoft.kimbanana.auth.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final GuestSessionRepository guestSessionRepository;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -46,25 +49,72 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             }
 
             String token = authHeader.substring(7);
+
             if (!jwtTokenProvider.validateToken(token)) {
                 log.info("Invalid JWT");
                 throw new MessagingException("Invalid JWT");
             }
 
-            String userId = jwtTokenProvider.getUserId(token);
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new MessagingException("User not found: " + userId));
+            String userType = jwtTokenProvider.getUserType(token);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            user, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+            if ("USER".equals(userType)) {
+                handleUserAuthentication(accessor, token);
+            } else if ("GUEST".equals(userType)) {
+                handleGuestAuthentication(accessor, token);
+            } else {
+                throw new MessagingException("Unknown user type" + userType);
+            }
 
-            accessor.setUser(authentication);
-            accessor.setSessionAttributes(Map.of("userId", user.getId()));
+        }
+        return message;
+    }
 
-            log.info("Authenticated user: {}", user.getId());
+
+    private void handleUserAuthentication(final StompHeaderAccessor accessor, final String token) {
+        String userId = jwtTokenProvider.getUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new MessagingException("User not found: " + userId));
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        user, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        accessor.setUser(authentication);
+        accessor.setSessionAttributes(Map.of(
+                "userId", user.getId(),
+                "userType", "USER",
+                "userName", user.getName()
+        ));
+
+        log.info("Authentication user: {}" , user.getId());
+    }
+
+
+    private void handleGuestAuthentication(final StompHeaderAccessor accessor, final String token) {
+
+        String guestId = jwtTokenProvider.getUserId(token);
+        String presentationId = jwtTokenProvider.getPresentationId(token);
+        String displayName = jwtTokenProvider.getDisplayName(token);
+
+        GuestSession guestSession = guestSessionRepository.findGuestId(guestId)
+                .orElseThrow(() -> new MessagingException("Guest session not found"));
+
+        if (guestSession.isExpired()) {
+            throw new MessagingException("Guest session expired");
         }
 
-        return message;
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        guestSession, null, List.of(new SimpleGrantedAuthority("ROLE_GUEST")));
+
+        accessor.setUser(authentication);
+        accessor.setSessionAttributes(Map.of(
+                "userId", guestId,
+                "userType", "GUEST",
+                "userName", displayName,
+                "presentationId", presentationId
+        ));
+
+        log.info("Authenticated guest: {} for presentation: {}", guestId, presentationId);
     }
 }
