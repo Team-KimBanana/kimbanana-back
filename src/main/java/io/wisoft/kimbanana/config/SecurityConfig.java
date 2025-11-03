@@ -55,6 +55,7 @@ public class SecurityConfig {
                                 "/presentation-thumbnails/**",
                                 "/ws-api/**",
                                 "/ws/**",
+                                "/api/invitations/**",
                                 "/kimbanana/app/swagger-ui/**",
                                 "/kimbanana/app/openapi/**",
                                 "/v3/api-docs/**",

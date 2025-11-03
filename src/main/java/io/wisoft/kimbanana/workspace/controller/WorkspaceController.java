@@ -25,7 +25,7 @@ public class WorkspaceController {
         this.workspaceService = workspaceService;
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseEntity<List<Workspace>> getAllSPresentation(@RequestBody PresentationRequest request) {
         return ResponseEntity.ok(workspaceService.findAllPresentation(request.getUserId()));
     }
