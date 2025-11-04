@@ -2,11 +2,11 @@ package io.wisoft.kimbanana.workspace.controller;
 
 import io.wisoft.kimbanana.presentation.entity.Presentation;
 import io.wisoft.kimbanana.workspace.Workspace;
-import io.wisoft.kimbanana.workspace.dto.PresentationRequest;
 import io.wisoft.kimbanana.workspace.service.WorkspaceService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/workspace/presentations")
@@ -26,8 +27,9 @@ public class WorkspaceController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Workspace>> getAllSPresentation(@RequestBody PresentationRequest request) {
-        return ResponseEntity.ok(workspaceService.findAllPresentation(request.getUserId()));
+    public ResponseEntity<List<Workspace>> getAllSPresentation(Authentication authentication) {
+        String userId = authentication.getName();
+        return ResponseEntity.ok(workspaceService.findAllPresentation(userId));
     }
 
     @GetMapping("/{presentationId}")
