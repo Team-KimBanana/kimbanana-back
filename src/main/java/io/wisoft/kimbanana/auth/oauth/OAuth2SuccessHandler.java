@@ -66,7 +66,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         res.addHeader(
                 "Set-Cookie",
                 String.format(
-                        "%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
+                        "%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Lax",
                         name, value, maxAgeSec
                 )
         );

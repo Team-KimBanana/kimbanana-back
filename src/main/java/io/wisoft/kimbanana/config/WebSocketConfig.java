@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.config;
 
+import io.wisoft.kimbanana.auth.jwt.JwtHandshakeInterceptor;
 import io.wisoft.kimbanana.auth.jwt.StompAuthChannelInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final JwtHandshakeInterceptor jwtHandshakeInterceptor;
     private final StompAuthChannelInterceptor stompAuthChannelInterceptor;
 
     @Override
@@ -24,9 +26,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry
-                .addEndpoint("/ws-api")
-                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws-api")
+                .addInterceptors(jwtHandshakeInterceptor)
+                .setAllowedOriginPatterns("https://daisy.wisoft.io");
     }
 
 
