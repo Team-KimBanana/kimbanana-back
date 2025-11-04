@@ -36,7 +36,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         System.out.println(">>> [DEBUG] extracted email = " + email);
 
         if (email == null || email.isBlank()) {
-            res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui?oauth=fail&reason=no-email");
+            res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui?oauth_error=1&reason=no-email");
             return;
         }
 
@@ -53,7 +53,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         System.out.println(">>> [OAUTH] cookies set, redirecting...");
 
-        res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui");
+        res.sendRedirect("https://daisy.wisoft.io/kimbanana/ui?oauth_success=1");
     }
 
     private void addCookie(HttpServletResponse res, String name, String value, int maxAgeSec) {
