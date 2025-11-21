@@ -28,9 +28,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         System.out.println(">>> [OAUTH] loadUser() called");
+        System.out.println(">>> [OAUTH] userRequest = " + userRequest);
 
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
-        System.out.println(">>> [OAUTH] google attributes = " + oAuth2User.getAttributes());
+        System.out.println(">>> [OAUTH] attributes = " + oAuth2User.getAttributes());
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration()
