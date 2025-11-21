@@ -31,7 +31,7 @@ public class OAuthAttributes {
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         switch (registrationId) {
             case "google": return ofGoogle(registrationId, userNameAttributeName, attributes);
-            // case "github": return ofGithub(...);
+            case "github": return ofGithub(userNameAttributeName, attributes);
             default: throw new OAuth2AuthenticationException(new OAuth2Error("unsupported_provider"),
                     "지원하지 않는 OAuth2 제공자: " + registrationId);
         }
@@ -45,6 +45,18 @@ public class OAuthAttributes {
                 .attributes(attributes)
                 .provider(registrationId)
                 .providerId((String) attributes.get("sub"))
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+    }
+
+    private static OAuthAttributes ofGithub(String userNameAttributeName,
+                                            Map<String, Object> attributes) {
+        return OAuthAttributes.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .provider("github")
+                .providerId(String.valueOf(attributes.get("id")))
+                .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
     }
