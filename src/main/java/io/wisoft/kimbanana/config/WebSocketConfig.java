@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-api")
                 .addInterceptors(jwtHandshakeInterceptor)
-                .setAllowedOriginPatterns("https://daisy.wisoft.io");
+                .setAllowedOriginPatterns("https://daisy.wisoft.io", "http://localhost:5173");
     }
 
 
