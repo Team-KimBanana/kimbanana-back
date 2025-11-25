@@ -1,4 +1,4 @@
-package io.wisoft.kimbanana.presentation.controller;
+package io.wisoft.kimbanana.presentation.websocket;
 
 import io.wisoft.kimbanana.presentation.dto.request.ActiveUser;
 import io.wisoft.kimbanana.presentation.entity.Slide;

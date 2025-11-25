@@ -1,4 +1,4 @@
-package io.wisoft.kimbanana.history;
+package io.wisoft.kimbanana.history.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.wisoft.kimbanana.presentation.entity.Slide;

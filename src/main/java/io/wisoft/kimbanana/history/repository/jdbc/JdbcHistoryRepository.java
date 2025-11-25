@@ -1,7 +1,7 @@
 package io.wisoft.kimbanana.history.repository.jdbc;
 
-import io.wisoft.kimbanana.history.History;
-import io.wisoft.kimbanana.history.Mapping;
+import io.wisoft.kimbanana.history.entity.History;
+import io.wisoft.kimbanana.history.entity.Mapping;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.sql.PreparedStatement;

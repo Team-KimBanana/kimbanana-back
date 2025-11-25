@@ -1,10 +1,10 @@
 package io.wisoft.kimbanana.history.service;
 
-import io.wisoft.kimbanana.history.History;
-import io.wisoft.kimbanana.history.HistoryDetailResponse;
-import io.wisoft.kimbanana.history.HistoryListResponse;
-import io.wisoft.kimbanana.history.Mapping;
-import io.wisoft.kimbanana.history.RestorePayload;
+import io.wisoft.kimbanana.history.entity.History;
+import io.wisoft.kimbanana.history.dto.HistoryDetailResponse;
+import io.wisoft.kimbanana.history.dto.HistoryListResponse;
+import io.wisoft.kimbanana.history.entity.Mapping;
+import io.wisoft.kimbanana.history.dto.RestorePayload;
 import io.wisoft.kimbanana.history.repository.HistoryRepository;
 import io.wisoft.kimbanana.presentation.entity.Slide;
 import java.util.List;
