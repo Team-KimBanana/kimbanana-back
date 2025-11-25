@@ -2,7 +2,7 @@
 package io.wisoft.kimbanana.image.service;
 
 import io.wisoft.kimbanana.image.entity.SlideImage;
-import io.wisoft.kimbanana.image.repository.JdbcImageUploadRepository;
+import io.wisoft.kimbanana.image.repository.jdbc.JdbcImageUploadRepository;
 import io.wisoft.kimbanana.image.util.ImageExpirationUtils;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;

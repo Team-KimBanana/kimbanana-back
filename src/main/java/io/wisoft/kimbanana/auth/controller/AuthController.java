@@ -1,9 +1,9 @@
 package io.wisoft.kimbanana.auth.controller;
 
-import io.wisoft.kimbanana.auth.dto.SignInRequest;
-import io.wisoft.kimbanana.auth.dto.SignUpRequest;
-import io.wisoft.kimbanana.auth.dto.TokenResponse;
-import io.wisoft.kimbanana.auth.dto.UserInfoResponse;
+import io.wisoft.kimbanana.auth.dto.request.SignInRequest;
+import io.wisoft.kimbanana.auth.dto.request.SignUpRequest;
+import io.wisoft.kimbanana.auth.dto.response.TokenResponse;
+import io.wisoft.kimbanana.auth.dto.response.UserInfoResponse;
 import io.wisoft.kimbanana.auth.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

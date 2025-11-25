@@ -1,6 +1,6 @@
 package io.wisoft.kimbanana.auth.repository;
 
-import io.wisoft.kimbanana.auth.User;
+import io.wisoft.kimbanana.auth.entity.User;
 import java.util.Optional;
 
 public interface UserRepository {
