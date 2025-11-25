@@ -1,6 +1,7 @@
-package io.wisoft.kimbanana.history;
+package io.wisoft.kimbanana.history.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.wisoft.kimbanana.history.entity.Mapping;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;

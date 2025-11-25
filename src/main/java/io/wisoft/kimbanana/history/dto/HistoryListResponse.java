@@ -1,4 +1,4 @@
-package io.wisoft.kimbanana.history;
+package io.wisoft.kimbanana.history.dto;
 
 import java.time.LocalDateTime;
 

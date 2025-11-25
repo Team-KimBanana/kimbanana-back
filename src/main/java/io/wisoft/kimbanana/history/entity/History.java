@@ -1,4 +1,4 @@
-package io.wisoft.kimbanana.history;
+package io.wisoft.kimbanana.history.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;

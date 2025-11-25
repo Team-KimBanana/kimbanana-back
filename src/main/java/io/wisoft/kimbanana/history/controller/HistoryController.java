@@ -1,9 +1,9 @@
 package io.wisoft.kimbanana.history.controller;
 
-import io.wisoft.kimbanana.history.HistoryDetailResponse;
-import io.wisoft.kimbanana.history.HistoryListResponse;
-import io.wisoft.kimbanana.history.RestorePayload;
-import io.wisoft.kimbanana.history.SavePayload;
+import io.wisoft.kimbanana.history.dto.HistoryDetailResponse;
+import io.wisoft.kimbanana.history.dto.HistoryListResponse;
+import io.wisoft.kimbanana.history.dto.RestorePayload;
+import io.wisoft.kimbanana.history.dto.SavePayload;
 import io.wisoft.kimbanana.history.service.HistoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
