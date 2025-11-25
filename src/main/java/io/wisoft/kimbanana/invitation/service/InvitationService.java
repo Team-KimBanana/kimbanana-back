@@ -1,12 +1,12 @@
 package io.wisoft.kimbanana.invitation.service;
 
-import io.wisoft.kimbanana.auth.GuestSession;
-import io.wisoft.kimbanana.auth.jwt.JwtTokenProvider;
+import io.wisoft.kimbanana.auth.entity.GuestSession;
 import io.wisoft.kimbanana.auth.repository.GuestSessionRepository;
-import io.wisoft.kimbanana.invitation.InvitationToken;
-import io.wisoft.kimbanana.invitation.dto.CreateInvitationRequest;
-import io.wisoft.kimbanana.invitation.dto.InvitationResponse;
-import io.wisoft.kimbanana.invitation.dto.ValidateInvitationResponse;
+import io.wisoft.kimbanana.infrastructure.security.jwt.JwtTokenProvider;
+import io.wisoft.kimbanana.invitation.entity.InvitationToken;
+import io.wisoft.kimbanana.invitation.dto.request.CreateInvitationRequest;
+import io.wisoft.kimbanana.invitation.dto.response.InvitationResponse;
+import io.wisoft.kimbanana.invitation.dto.response.ValidateInvitationResponse;
 import io.wisoft.kimbanana.invitation.repository.InvitationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package io.wisoft.kimbanana.invitation.repository;
 
-import io.wisoft.kimbanana.invitation.InvitationToken;
+import io.wisoft.kimbanana.invitation.entity.InvitationToken;
 import java.util.Optional;
 
 public interface InvitationTokenRepository {

@@ -1,6 +1,6 @@
 package io.wisoft.kimbanana.auth.repository;
 
-import io.wisoft.kimbanana.auth.GuestSession;
+import io.wisoft.kimbanana.auth.entity.GuestSession;
 import java.util.Optional;
 
 public interface GuestSessionRepository {

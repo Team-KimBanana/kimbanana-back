@@ -1,7 +1,7 @@
 package io.wisoft.kimbanana.image.service;
 
 import io.wisoft.kimbanana.image.entity.SlideImage;
-import io.wisoft.kimbanana.image.repository.JdbcImageUploadRepository;
+import io.wisoft.kimbanana.image.repository.jdbc.JdbcImageUploadRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

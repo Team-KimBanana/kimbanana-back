@@ -1,9 +1,9 @@
 package io.wisoft.kimbanana.invitation.controller;
 
-import io.wisoft.kimbanana.auth.User;
-import io.wisoft.kimbanana.invitation.dto.CreateInvitationRequest;
-import io.wisoft.kimbanana.invitation.dto. InvitationResponse;
-import io.wisoft.kimbanana.invitation.dto.ValidateInvitationResponse;
+import io.wisoft.kimbanana.auth.entity.User;
+import io.wisoft.kimbanana.invitation.dto.request.CreateInvitationRequest;
+import io.wisoft.kimbanana.invitation.dto.response.InvitationResponse;
+import io.wisoft.kimbanana.invitation.dto.response.ValidateInvitationResponse;
 import io.wisoft.kimbanana.invitation.service.InvitationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
