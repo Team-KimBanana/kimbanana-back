@@ -1,5 +1,6 @@
 package io.wisoft.kimbanana.auth.controller;
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import io.wisoft.kimbanana.auth.dto.request.SignInRequest;
 import io.wisoft.kimbanana.auth.dto.request.SignUpRequest;
 import io.wisoft.kimbanana.auth.dto.response.TokenResponse;
@@ -7,7 +8,10 @@ import io.wisoft.kimbanana.auth.dto.response.UserInfoResponse;
 import io.wisoft.kimbanana.auth.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.net.http.HttpResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +35,7 @@ public class AuthController {
     @GetMapping("/profile")
     public ResponseEntity<UserInfoResponse> getProfile(HttpServletRequest request, @RequestHeader(value="Authorization", required = false) String header) {
         String token = resolveToken(request, header);
+
         if (token == null) {
             throw new IllegalArgumentException("토큰이 없습니다. Authorization 헤더 또는 access_token 쿠키가 필요합니다.");
         }
@@ -74,13 +79,19 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
+    public ResponseEntity<UserInfoResponse> signIn(@RequestBody SignInRequest request, HttpServletResponse response) {
         if (request.email() == null || request.password() == null) {
             throw new IllegalArgumentException("이메일과 비밀번호는 필수입니다.");
         }
 
-        return ResponseEntity.ok(authService.signIn(request));
+        TokenResponse tokenResponse = authService.signIn(request);
+
+        response.setHeader("Authorization",  "Bearer " + tokenResponse.accessToken());
+        response.setHeader("X-Refresh-Token",  tokenResponse.refreshToken());
+
+        return ResponseEntity.ok(authService.getUserInfo(tokenResponse.accessToken()));
     }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestHeader("Authorization") String header) {
