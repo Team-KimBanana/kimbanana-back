@@ -7,6 +7,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +70,20 @@ public class UserService {
      */
     public boolean isPasswordMatch(User user, String rawPassword) {
         return encoder.matches(rawPassword, user.getPassword());
+    }
+
+    /**
+     * 회원 삭제
+     */
+    @Transactional
+    public void deleteUser(final String userId) {
+        findById(userId);
+
+        // 2. 삭제
+        int result = userRepository.deleteById(userId);
+
+        if (result == 0) {
+            throw new IllegalStateException("사용자 삭제에 실패했습니다");
+        }
     }
 }
