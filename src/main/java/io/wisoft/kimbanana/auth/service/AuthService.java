@@ -9,6 +9,7 @@ import io.wisoft.kimbanana.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +68,21 @@ public class AuthService {
     public UserInfoResponse getUserInfo(String accessToken) {
         String userId = jwtTokenProvider.getUserId(accessToken);
         return userService.getUserInfo(userId);
+    }
+
+    /**
+     * 사용자 삭제
+     */
+    @Transactional
+    public void deleteAccount(final String accessToken, final String password) {
+
+        String userId = jwtTokenProvider.getUserId(accessToken);
+
+        User user = userService.findById(userId);
+
+        if(!userService.isPasswordMatch(user, password)) {
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
+        userService.deleteUser(userId);
     }
 }

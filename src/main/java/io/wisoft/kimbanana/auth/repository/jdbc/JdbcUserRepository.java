@@ -44,7 +44,7 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public Integer save(final User user) {
+    public int save(final User user) {
         String sql = "INSERT INTO users (email, name, password, provider, provider_id) "
                 + "VALUES (?, ?, ?, ?, ?) "
                 + "ON CONFLICT (email) "
@@ -55,6 +55,13 @@ public class JdbcUserRepository implements UserRepository {
                 + "WHERE users.provider = EXCLUDED.provider";
 
         return jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getPassword(), user.getProvider(), user.getProviderId());
+    }
+
+    @Override
+    public int deleteById(final String id) {
+        String sql = "DELETE FROM users WHERE id = ?";
+
+        return jdbcTemplate.update(sql, id);
     }
 
 
