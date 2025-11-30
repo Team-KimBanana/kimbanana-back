@@ -89,8 +89,12 @@ public class SecurityConfig {
         config.addAllowedOriginPattern("https://daisy.wisoft.io");
         config.addAllowedOriginPattern("http://localhost:5173");
 
-//        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.addAllowedHeader("*");
+        config.setExposedHeaders(List.of(
+                "Authorization",
+                "X-Refresh-Token"
+        ));
+
 
         // 허용 메서드
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
