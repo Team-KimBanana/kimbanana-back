@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class ImageExpirationUtils {
 
-    public static final int RETENTION_DAYS = 30;
+    public static final int RETENTION_DAYS = 180;
 
     /**
      * 만료일 계산
