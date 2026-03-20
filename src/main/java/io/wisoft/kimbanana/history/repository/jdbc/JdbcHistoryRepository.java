@@ -40,26 +40,26 @@ public class JdbcHistoryRepository implements HistoryRepository {
     }
 
     @Override
-    public void addHistory(final String batchId, final String presentationId, final List<Slide> request, final String currentUserId) {
+    public void addHistory(final String batchId, final String presentationId, final List<Slide> request,
+                           final String currentUserId) {
         String sql = "INSERT INTO history (history_id, last_revision_date, last_revision_user_id, slide_id, slide_order, data, presentation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
 
-        for (Slide slide : request) {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement psmt = connection.prepareStatement(sql);
-                psmt.setString(1, batchId);
-                psmt.setTimestamp(2, Timestamp.valueOf(now));
-                psmt.setString(3, currentUserId);
-                psmt.setString(4, slide.getSlideId());
-                psmt.setInt(5, slide.getSlideOrder());
-                psmt.setString(6, slide.getData().toString());
-                psmt.setString(7, presentationId);
-                return psmt;
-            });
-        }
+        List<Object[]> batchArgs = request.stream()
+                .map(slide -> new Object[]{
+                        batchId,
+                        Timestamp.valueOf(now),
+                        currentUserId,
+                        slide.getSlideId(),
+                        slide.getSlideOrder(),
+                        slide.getData().toString(),
+                        presentationId
+                })
+                .toList();
+
+        jdbcTemplate.batchUpdate(sql, batchArgs);
     }
 
-    @Transactional
     @Override
     public void overwrite(String presentationId, String batchId, String currentUserId) {
         // 1. batchId로 history 데이터 조회 (순서 보장)
@@ -93,7 +93,8 @@ public class JdbcHistoryRepository implements HistoryRepository {
     }
 
     @Override
-    public void restorePartialSlides(String presentationId, List<Mapping> mappings, List<Slide> slides, String currentUserId) {
+    public void restorePartialSlides(String presentationId, List<Mapping> mappings, List<Slide> slides,
+                                     String currentUserId) {
         String sql = "UPDATE slide SET data = ?, last_revision_date = ?, last_revision_user_id = ? " +
                 "WHERE slide_id = ? AND presentation_id = ?";
 
