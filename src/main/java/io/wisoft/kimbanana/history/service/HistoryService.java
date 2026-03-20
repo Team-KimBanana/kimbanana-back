@@ -47,6 +47,7 @@ public class HistoryService {
                 .build();
     }
 
+    @Transactional
     public String addHistory(final String presentationId, final List<Slide> slides, final String currentUserId) {
         // service에서 batchId(UUID) 생성
         String batchId = "h_" + UUID.randomUUID();
