@@ -58,7 +58,7 @@ public class HistoryService {
     @Transactional
     public HttpStatus restoreHistory(final String presentationId, final RestorePayload request) {
         List<History> history = historyRepository.findByHistoryId(request.getHistoryId());
-        if (history == null) {
+        if (history.isEmpty()) {
             return HttpStatus.NOT_FOUND;
         }
 
